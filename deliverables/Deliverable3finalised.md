@@ -14,7 +14,7 @@ Wiktor Jagla
 
 ## Project Backlog
 
-Instructions: Remove the example, and fill it with your project backlog. (Remove the instructions before submission)
+
 
 | Epic              | US ID* | As a .. | I want to .. | So that ... | F/NF/UI** | Priority|
 | ----------------- | ------ | ------------- | ------- | ------- |-------- | ----- |
