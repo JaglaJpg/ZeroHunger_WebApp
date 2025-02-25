@@ -1,0 +1,38 @@
+# Eclipse-specific files
+/.classpath
+/.project
+/.settings/
+/.metadata/
+/bin/
+/tmp/
+*.log
+
+# Ignore compiled Java class files
+**/*.class
+
+# Maven-specific files
+/.mvn/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+release.properties
+
+# Gradle-specific files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Ignore IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Ignore environment files
+.env
