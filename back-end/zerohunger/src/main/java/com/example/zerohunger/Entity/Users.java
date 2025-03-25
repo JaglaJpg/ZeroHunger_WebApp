@@ -27,6 +27,9 @@ public class Users {
 	@Column(nullable = false, unique = true)
 	private String email;
 	private String password;
+	private String address;
+	private double longitude;
+	private double latitude;
 	
 	//Relation to userStats table, Primary key of users is also primary AND foreign key for userStats
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
@@ -89,6 +92,30 @@ public class Users {
     
     public void setPassword(String password) {
     	this.password = password;
+    }
+    
+    public String getAddress() {
+    	return this.address;
+    }
+    
+    public void setAddress(String address) {
+    	this.address = address;
+    }
+    
+    public double getLat() {
+    	return this.latitude;
+    }
+    
+    public void setLat(double lat) {
+    	this.latitude = lat;
+    }
+    
+    public double getLong() {
+    	return this.longitude;
+    }
+    
+    public void setLong(double lon) {
+    	this.longitude = lon;
     }
    
 }

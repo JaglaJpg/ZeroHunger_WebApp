@@ -1,5 +1,7 @@
 package com.example.zerohunger.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 
 import org.apache.el.stream.Optional;
@@ -7,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.example.zerohunger.DTO.Coordinates;
 import com.example.zerohunger.DTO.LoginRequest;
 import com.example.zerohunger.DTO.LoginResponse;
 import com.example.zerohunger.Entity.Users;
@@ -20,17 +23,23 @@ public class UsersService {
 	private final FoodService foodService;
 	private final StatsService statsService; // might not be needed decide later
 	private final UsersRepo usersRepo;
+	private final LocationService locationService;
 	
 	@Autowired
-	public UsersService(FoodService foodService, StatsService statsService, UsersRepo usersRepo) {
+	public UsersService(FoodService foodService, StatsService statsService, UsersRepo usersRepo
+			, LocationService locationService) {
 		this.foodService = foodService;
 		this.statsService = statsService;
 		this.usersRepo = usersRepo;
+		this.locationService = locationService;
 	}
 	
 	public boolean addUser(Users user) {
 		try {
 			user.setPassword(PasswordUtil.hashPassword(user.getPassword()));
+			Coordinates coords = locationService.getCoordinates(user.getAddress());
+			user.setLat(coords.getLatitude());
+			user.setLong(coords.getLongitude());
 	        userStats stats = new userStats();
 	        stats.setUserID(user);
 	        stats.setTotalSaved(0);
@@ -46,6 +55,19 @@ public class UsersService {
 			return false;
 		}
 	}
+	
+	public boolean verifyAge(LocalDate dob) {
+		LocalDate today = LocalDate.now();
+		int age = Period.between(today,  dob).getYears();
+		
+		if(age < 16) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
 	
 	public LoginResponse VerifyUser(LoginRequest request) {
 		String email = request.getEmail();
