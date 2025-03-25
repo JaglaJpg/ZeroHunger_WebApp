@@ -46,6 +46,19 @@ public class SessionService {
 		return tokens;
 	}
 	
+	public boolean isRefreshTokenValid(String refresh, Long userID) {
+		RefreshToken realRefresh = refreshRepo.findByUserID_UserID(userID);
+		
+		if(!tokenUtil.validateToken(refresh)) {
+			return false;
+		}else if((!refresh.equals(realRefresh.getToken()))) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
 	public Boolean CleanUpSession(Users userID) {
 		refreshRepo.deleteByUserID(userID);
 		seshRepo.deleteByUserID(userID);
