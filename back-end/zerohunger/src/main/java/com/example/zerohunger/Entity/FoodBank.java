@@ -21,6 +21,10 @@ public class FoodBank {
     	this.name = name;
     }
     
+    public String getName() {
+    	return this.name;
+    }
+    
     public void setLat(double Lat) {
     	this.latitude = Lat;
     }
@@ -28,6 +32,15 @@ public class FoodBank {
     public void setLong(double longitude) {
     	this.longitude = longitude;
     }
+    
+    public double getLat() {
+    	return this.latitude;
+    }
+    
+    public double getLong() {
+    	return this.longitude;
+    }
+    
     
     public void setAddress(String address) {
     	this.address = address;

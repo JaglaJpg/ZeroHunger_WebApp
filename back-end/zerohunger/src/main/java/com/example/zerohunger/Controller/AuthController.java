@@ -1,6 +1,5 @@
 package com.example.zerohunger.Controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.zerohunger.Service.LocationService;
 import com.example.zerohunger.Service.SessionService;
 import com.example.zerohunger.Service.UsersService;
 
@@ -24,17 +24,25 @@ import com.example.zerohunger.Entity.Users;
 public class AuthController {
 	private final UsersService usersService;
 	private final SessionService sessionService;
+	private final LocationService locationService;
 	
-	@Autowired
-	public AuthController(UsersService usersService, SessionService sessionService) {
+	public AuthController(UsersService usersService, SessionService sessionService, 
+			LocationService locationService) {
 		this.usersService = usersService;
 		this.sessionService = sessionService;
+		this.locationService = locationService;
 	}
 	
 	@PostMapping("/signup")
 	public ResponseEntity<?> signUp(@RequestBody Users newUser){
+		if (!locationService.isValidAddress(newUser.getAddress())) {
+	        return ResponseEntity.badRequest().body("Invalid address provided. Please enter a valid address.");
+	    } else if(!usersService.verifyAge(newUser.getDOB())) {
+	    	return ResponseEntity.unprocessableEntity().body("User Not Old Enough");
+	    }
 		usersService.addUser(newUser);
-		return ResponseEntity.ok("Success");
+		
+		return ResponseEntity.ok(newUser);
 	}
 	
 	@PostMapping("/signin")

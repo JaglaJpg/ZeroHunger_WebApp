@@ -35,6 +35,7 @@ public class OngoingDonations {
     private FoodBank bank;
     
     private LocalDateTime timestamp;
+    private String name;
 
     public Long getDonationID() {
         return donationID;
@@ -83,4 +84,13 @@ public class OngoingDonations {
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
+    
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+    
 }

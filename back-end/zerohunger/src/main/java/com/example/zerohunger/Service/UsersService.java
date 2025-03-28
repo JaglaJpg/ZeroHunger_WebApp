@@ -67,7 +67,11 @@ public class UsersService {
 		return true;
 	}
 	
-	
+	public Users fetchUser(Long ID) {
+		Users user = usersRepo.findById(ID)
+				.orElseThrow(() -> new RuntimeException("User not found for userId " + ID));
+		return user;
+	}
 	
 	public LoginResponse VerifyUser(LoginRequest request) {
 		String email = request.getEmail();
