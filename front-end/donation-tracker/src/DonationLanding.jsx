@@ -5,34 +5,35 @@ function DonationLanding() {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userType, setUserType] = useState('donor');
+  const [userType, setUserType] = useState('donor'); // Hardcoded for now
 
   useEffect(() => {
-    const fetchDonations = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:8080/donations/fetchDonations', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error(`Fetching donations failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setDonations(data);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching donations:', err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchDonations();
   }, []);
+
+  const fetchDonations = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:8080/donations/fetchDonations', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Fetching donations failed with status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setDonations(data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching donations:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const updateDonationStatus = async (id, newStatus) => {
     try {
@@ -55,13 +56,14 @@ function DonationLanding() {
       const data = await response.json();
       console.log('Update response:', data);
 
-      setDonations(donations.map(donation => 
-        donation.donationId === id ? { ...donation, status: newStatus } : donation
-      ));
+      // Refresh the list
+      fetchDonations();
+
     } catch (err) {
       console.error('Error updating donation status:', err);
     }
   };
+
 
   if (loading) return <div className="loading">Loading donations...</div>;
   if (error) return <div className="error">Error: {error}</div>;
@@ -78,26 +80,31 @@ function DonationLanding() {
             <h2>Your Donations</h2>
             <div className="donation-box">
               {donations.length > 0 ? (
-                donations.map(donation => (
-                  <div key={donation.donationId} className="donation-item">
+                donations.map((donation, index) => (
+                  <div key={donation.donationId || index} className="donation-item">
                     <h3>Donation to Food Bank #{donation.foodBankID}</h3>
                     <p><strong>Address:</strong> {donation.address}</p>
                     <p><strong>Status:</strong> {donation.status}</p>
 
                     <div className="donation-status">
-                    <span className={`status-badge ${donation.status?.toLowerCase?.() || 'unknown'}`}>
+                      <span className={`status-badge ${donation.status?.toLowerCase?.() || 'unknown'}`}>
                         {donation.status}
                       </span>
 
                       {donation.userType === 'donor' && (
                         <select
-                          value={donation.status}
-                          onChange={(e) => updateDonationStatus(donation.donationId, e.target.value)}
+                          value={donation.status ?? ''}
+                          onChange={(e) => {
+                            const selected = e.target.value;
+                            if (selected) updateDonationStatus(donation.donationId, selected);
+                          }}
                         >
+                          <option value="" disabled>Select status</option>
                           <option value="PENDING">Pending</option>
                           <option value="ONGOING">Ongoing</option>
                           <option value="DELIVERED">Delivered</option>
                         </select>
+
                       )}
                     </div>
                   </div>

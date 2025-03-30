@@ -19,6 +19,8 @@ import com.example.zerohunger.Entity.Users;
 import com.example.zerohunger.Repository.DonationRepo;
 import com.example.zerohunger.Repository.FoodBankRepo;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class DonationService {
 
@@ -53,25 +55,19 @@ public class DonationService {
         donation.setBank(bank);
         donation.setTimestamp(date);
         donation.setName(name);
-
+        donation.setStatus(DonationStatus.PENDING);
         donationRepo.save(donation);
         logger.info("New donation created between donor {} and recipient {}", donor.getUserID(), recipientID);
 
         return donation;
     }
 
-    // Update donation status in stages
-    public Boolean updateStatus(Long donationID) {
+    @Transactional
+    public Boolean updateStatus(Long donationID, DonationStatus status) {
         OngoingDonations donation = donationRepo.findById(donationID)
             .orElseThrow(() -> new RuntimeException("Donation not found"));
 
-        if (donation.getStatus() == DonationStatus.PENDING) {
-            donationRepo.updateStatus(DonationStatus.ONGOING, donationID);
-            logger.info("Donation {} status updated to ONGOING", donationID);
-        } else if (donation.getStatus() == DonationStatus.ONGOING) {
-            donationRepo.updateStatus(DonationStatus.DELIVERED, donationID);
-            logger.info("Donation {} status updated to DELIVERED", donationID);
-        }
+        donationRepo.updateStatus(status, donationID);
 
         return true;
     }

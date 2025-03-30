@@ -42,7 +42,7 @@ public class ClothingDonationController {
 
         try {
             //Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 3432;
+            long userId = 1212;
         	
             ClothingDonation donation = clothingDonationService.createDonation(donationRequest, image, userId);
             return ResponseEntity.ok(donation);
@@ -57,7 +57,7 @@ public class ClothingDonationController {
     public ResponseEntity<?> getAllAvailableClothing() {
         try {
         	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 3432;
+            long userId = 1212;
             Users user = userService.fetchUser(userId);
             List<ClothingDonation> donations = clothingDonationService.getAllAvailableDonations();
 
@@ -78,7 +78,7 @@ public class ClothingDonationController {
     public ResponseEntity<?> claimClothing(@PathVariable Long id) {
         try {
         	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1111;
+            long userId = 1212;
             ClothingDonation donation = clothingDonationService.fetchClothing(id);
             clothingDonationService.claimClothingItem(id);
             listingManager.extractListingInfo(donation, userId);

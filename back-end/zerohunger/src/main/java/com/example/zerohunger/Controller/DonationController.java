@@ -1,16 +1,24 @@
 package com.example.zerohunger.Controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.zerohunger.DTO.BankOptionsDTO;
+import com.example.zerohunger.DTO.DonationStatusUpdateDTO;
+import com.example.zerohunger.Entity.DonationStatus;
 import com.example.zerohunger.Service.DonationService;
 
 @RestController
@@ -37,12 +45,24 @@ public class DonationController {
 	@GetMapping("/fetchDonations")
 	public ResponseEntity<?> fetchUserDonations() {
 	    // For testing — replace with real userId if needed
-	    long userId = 3432;
+	    long userId = 1212;
 
 	    try {
 	        return ResponseEntity.ok(donationService.fetchDonations(userId));
 	    } catch (Exception e) {
 	        return ResponseEntity.status(500).body("Failed to fetch donations: " + e.getMessage());
 	    }
+	}
+	
+	@PatchMapping("/updateStatus")
+	public ResponseEntity<?> updateStatus(@RequestBody DonationStatusUpdateDTO request){
+	    donationService.updateStatus(request.getDonationId(), request.getStatus());
+
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("donationId", request.getDonationId());
+	    response.put("newStatus", request.getStatus());
+	    response.put("message", "Status updated successfully");
+
+	    return ResponseEntity.ok(response);
 	}
 }
