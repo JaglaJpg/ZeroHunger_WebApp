@@ -21,6 +21,8 @@ import com.example.zerohunger.DTO.DonationStatusUpdateDTO;
 import com.example.zerohunger.Entity.DonationStatus;
 import com.example.zerohunger.Service.DonationService;
 
+//end points for Tracker page and for fetching foodbanks to select as pickup location
+
 @RestController
 @RequestMapping("/donations")
 public class DonationController {
@@ -33,9 +35,10 @@ public class DonationController {
 	
 	@GetMapping("/bankOptions")
 	public ResponseEntity<?> fetchBankOptions() {
-	    Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    //Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //fetch userID from security filter
+		long userId = 1111;
 	    try {
-	        List<BankOptionsDTO> options = donationService.fetchBanks(userId);
+	        List<BankOptionsDTO> options = donationService.fetchBanks(userId);//gathers 10 closest foodbanks to the user
 	        return ResponseEntity.ok(options);
 	    } catch (Exception e) {
 	        return ResponseEntity.status(404).body("No food banks found");
@@ -45,18 +48,18 @@ public class DonationController {
 	@GetMapping("/fetchDonations")
 	public ResponseEntity<?> fetchUserDonations() {
 	    // For testing — replace with real userId if needed
-	    long userId = 1212;
+	    long userId = 3432;
 
 	    try {
-	        return ResponseEntity.ok(donationService.fetchDonations(userId));
+	        return ResponseEntity.ok(donationService.fetchDonations(userId)); //returns ongoing donations linked to the user
 	    } catch (Exception e) {
 	        return ResponseEntity.status(500).body("Failed to fetch donations: " + e.getMessage());
 	    }
 	}
 	
 	@PatchMapping("/updateStatus")
-	public ResponseEntity<?> updateStatus(@RequestBody DonationStatusUpdateDTO request){
-	    donationService.updateStatus(request.getDonationId(), request.getStatus());
+	public ResponseEntity<?> updateStatus(@RequestBody DonationStatusUpdateDTO request){ //recieves id of donation to update and the new status
+	    donationService.updateStatus(request.getDonationId(), request.getStatus()); //applies the update
 
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("donationId", request.getDonationId());

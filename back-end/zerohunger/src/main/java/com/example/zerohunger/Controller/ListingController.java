@@ -50,7 +50,8 @@ public class ListingController {
         }
 
         try {
-        	Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        	long userId = 1111;
             return ResponseEntity.ok(foodService.CreateListings(request, userId));
         } catch (Exception e) {
             logger.error("Error adding food listing", e);
@@ -61,7 +62,8 @@ public class ListingController {
     // ✅ Get all food listings
     @GetMapping
     public ResponseEntity<?> getAllListings() {
-    	Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	long userId = 1111;
     	Users user = userService.fetchUser(userId);
     	List<FoodListings> listings = foodService.getAllListings();
     	
@@ -79,7 +81,8 @@ public class ListingController {
         logger.info("Claim request received for ID: {}", id);
 
         try {
-        	Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        	long userId = 1212;
         	FoodListings listing = foodService.fetchListing(id);
             foodService.claimFoodItem(id);
             listManager.extractListingInfo(listing, userId);

@@ -46,10 +46,11 @@ public class DonationService {
 
     // Create a new donation record
     public OngoingDonations StartDonation(Long recipientID, Users donor, FoodBank bank, String name) {
-        Users recipient = userService.fetchUser(recipientID);
-        LocalDateTime date = LocalDateTime.now();
+        Users recipient = userService.fetchUser(recipientID); //recipientID will be the one in the request for claiming a donation, the 
+        													  //user is then fetched
+        LocalDateTime date = LocalDateTime.now(); //time stamp set
 
-        OngoingDonations donation = new OngoingDonations();
+        OngoingDonations donation = new OngoingDonations();//new ongoing donation entry filled out and saved
         donation.setRecipient(recipient);
         donation.setDonor(donor);
         donation.setBank(bank);
@@ -62,12 +63,10 @@ public class DonationService {
         return donation;
     }
 
+    //updates the delivery status of an ongoing donation
     @Transactional
     public Boolean updateStatus(Long donationID, DonationStatus status) {
-        OngoingDonations donation = donationRepo.findById(donationID)
-            .orElseThrow(() -> new RuntimeException("Donation not found"));
-
-        donationRepo.updateStatus(status, donationID);
+        donationRepo.updateStatus(status, donationID); //changes the status of an entry in ongoing donations where the ID = the passed ID
 
         return true;
     }
@@ -75,9 +74,10 @@ public class DonationService {
     // Fetch list of donation DTOs
     public List<OngoingDonationDTO> fetchDonations(Long ID) {
         List<OngoingDonationDTO> donations = new ArrayList<>();
-        List<OngoingDonations> list = donationRepo.listDonations(ID);
+        List<OngoingDonations> list = donationRepo.listDonations(ID);//gets a list of entries containing the passed userID as either a 
+        															 //donor or a recipient
 
-        for (OngoingDonations x : list) {
+        for (OngoingDonations x : list) { //puts all ongoing donations in a list sayign which type of user is the user fetching the info
             String type = ID.equals(x.getDonor().getUserID()) ? "donor" : "recipient";
             OngoingDonationDTO dto = new OngoingDonationDTO(x.getBank(), x, type);
             donations.add(dto);
@@ -90,15 +90,16 @@ public class DonationService {
     public List<BankOptionsDTO> fetchBanks(Long userID) {
         List<BankOptionsDTO> options = new ArrayList<>();
         try {
-            Users user = userService.fetchUser(userID);
-            List<FoodBank> banks = foodBankRepo.findAll();
+            Users user = userService.fetchUser(userID); //fetches user entry
+            List<FoodBank> banks = foodBankRepo.findAll();//fetches all food banks
 
-            for (FoodBank x : banks) {
+            for (FoodBank x : banks) { //gives all foodbank entries a distance from them to the user
                 double distance = location.calculateDistance(user.getLat(), user.getLong(), x.getLat(), x.getLong());
                 BankOptionsDTO option = new BankOptionsDTO(x.getID(), x.getName(), distance);
                 options.add(option);
             }
-
+            
+            //orders the list of foodbanks and leaves only the top 10 closest
             options.sort(Comparator.comparingDouble(BankOptionsDTO::getDistance));
             if (options.size() > 10) {
                 options.subList(10, options.size()).clear();
@@ -112,7 +113,7 @@ public class DonationService {
         return options;
     }
 	
-	public FoodBank fetchBank(Long bankID) {
+	public FoodBank fetchBank(Long bankID) { //fetches specific foodbank by ID
 	
 		return foodBankRepo.findById(bankID)
 				.orElseThrow(() -> new RuntimeException("FoodBank not found"));

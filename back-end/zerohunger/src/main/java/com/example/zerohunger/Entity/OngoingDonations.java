@@ -12,6 +12,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+//table for ongoign donations, when a recipient claims a listing
+
 @Entity
 @Table(name = "OngoingDonations")
 public class OngoingDonations {
