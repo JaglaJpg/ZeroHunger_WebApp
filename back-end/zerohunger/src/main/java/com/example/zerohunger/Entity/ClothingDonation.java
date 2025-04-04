@@ -39,7 +39,7 @@ public class ClothingDonation {
 
     private LocalDateTime donationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "donor_id")
     private Users donor;
 

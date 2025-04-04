@@ -3,6 +3,7 @@ package com.example.zerohunger.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.example.zerohunger.Entity.AppliancesDonation;
 import com.example.zerohunger.Entity.ClothingDonation;
 import com.example.zerohunger.Entity.FoodBank;
 import com.example.zerohunger.Entity.FoodListings;
@@ -31,6 +32,10 @@ public class ListingManager {
 		    name = ((ClothingDonation) listing).getClothName();
 		    bank = ((ClothingDonation) listing).getFoodBank();
 		    donor = ((ClothingDonation) listing).getDonor();
+		} else if (listing instanceof AppliancesDonation) {
+			name = ((AppliancesDonation) listing).getApplianceName();
+			bank = ((AppliancesDonation) listing).getFoodBank();
+			donor = ((AppliancesDonation) listing).getDonor();
 		}
 		
 		donationService.StartDonation(recipientID, donor, bank, name);

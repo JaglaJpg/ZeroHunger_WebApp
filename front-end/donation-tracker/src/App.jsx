@@ -1,17 +1,14 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import DonationLanding from './DonationLanding';
-
+import React from "react";
+import FoodListing from "./components/FoodListing";
 
 function App() {
   return (
-    <div className="App">
-      <DonationLanding />
+    <div className="min-h-screen bg-gray-50 p-6">
+      <FoodListing />
     </div>
   );
 }
-
 
 export default App

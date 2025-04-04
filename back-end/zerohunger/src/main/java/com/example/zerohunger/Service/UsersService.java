@@ -69,7 +69,7 @@ public class UsersService {
 	
 	public Users fetchUser(Long ID) {
 		Users user = usersRepo.findById(ID)
-				.orElseThrow(() -> new RuntimeException("User not found for userId " + ID));
+				.orElseThrow(() -> new RuntimeException("cant find"));
 		return user;
 	}
 	
