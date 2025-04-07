@@ -53,4 +53,12 @@ public class FoodBank {
     public String getAddress() {
     	return this.address;
     }
+    
+    public double getDistance() {
+        return this.distance;
+    }
+
+    public void setDistance(double distance) {
+    	this.distance = distance;
+    }
 }

@@ -6,12 +6,10 @@ const FoodListing = () => {
   const [expirationDate, setExpirationDate] = useState("");
   const [foodTypes, setFoodTypes] = useState([]);
   const [showForm, setShowForm] = useState(true);
-
-  // New state for bank options and selected bank
   const [bankOptions, setBankOptions] = useState([]);
   const [selectedBank, setSelectedBank] = useState("");
+  const [selectedBankInfo, setSelectedBankInfo] = useState(null);
 
-  // Fetch food items from backend
   const fetchListings = () => {
     fetch("http://localhost:8080/listings")
       .then((res) => res.json())
@@ -19,13 +17,11 @@ const FoodListing = () => {
       .catch((error) => console.error("Error fetching food items:", error));
   };
 
-  // Fetch bank options from backend
   const fetchBankOptions = () => {
     fetch("http://localhost:8080/donations/bankOptions")
       .then((res) => res.json())
       .then((data) => {
         setBankOptions(data);
-        // Optionally, preselect the first option if available
         if (data.length > 0) {
           setSelectedBank(data[0].bankID);
         }
@@ -38,16 +34,13 @@ const FoodListing = () => {
     fetchBankOptions();
   }, []);
 
-  // Handle form submission (POST request)
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Build new food item with the selected bank option as foodBankID
     const newFoodItem = {
       foodName,
       expirationDate,
       foodType: foodTypes.map((ft) => ft.toUpperCase()),
-      foodBankID: selectedBank, // send the bank ID
+      foodBankID: selectedBank,
     };
 
     try {
@@ -64,32 +57,32 @@ const FoodListing = () => {
       setExpirationDate("");
       setFoodTypes([]);
       setShowForm(false);
-      fetchListings(); // Refresh list
+      fetchListings();
     } catch (error) {
       console.error("Add food error:", error);
       alert("Error: Failed to add food");
     }
   };
 
-  // Handle claim food item (PUT request)
   const handleClaim = async (id) => {
     try {
       const response = await fetch(
         `http://localhost:8080/listings/claim/${id}`,
-        {
-          method: "PUT",
-        }
+        { method: "PUT" }
       );
 
       if (!response.ok) throw new Error("Failed to claim food");
 
       alert("Food claimed!");
-      fetchListings(); // Refresh after claim
+      fetchListings();
     } catch (error) {
       console.error("Claim error:", error);
       alert("Error claiming food item.");
     }
   };
+
+  const openBankModal = (bank) => setSelectedBankInfo(bank);
+  const closeBankModal = () => setSelectedBankInfo(null);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center p-6">
@@ -97,7 +90,7 @@ const FoodListing = () => {
 
       {/* Form to Add Food */}
       {showForm && (
-        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg mx-auto mb-10 transition-transform transform hover:scale-105 hover:shadow-xl">
+        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg mx-auto mb-10">
           <h2 className="text-3xl font-bold mb-5">➕ Add Food Item</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -111,9 +104,7 @@ const FoodListing = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">
-                Expiration Date:
-              </label>
+              <label className="block font-semibold mb-1">Expiration Date:</label>
               <input
                 type="date"
                 value={expirationDate}
@@ -123,16 +114,12 @@ const FoodListing = () => {
               />
             </div>
             <div>
-              <label className="block font-semibold mb-1">
-                Food Type (Allergens):
-              </label>
+              <label className="block font-semibold mb-1">Food Type (Allergens):</label>
               <select
                 multiple
                 value={foodTypes}
                 onChange={(e) =>
-                  setFoodTypes(
-                    [...e.target.selectedOptions].map((o) => o.value)
-                  )
+                  setFoodTypes([...e.target.selectedOptions].map((o) => o.value))
                 }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
@@ -144,9 +131,7 @@ const FoodListing = () => {
               </select>
             </div>
             <div>
-              <label className="block font-semibold mb-1">
-                Pickup Location:
-              </label>
+              <label className="block font-semibold mb-1">Pickup Location:</label>
               <select
                 value={selectedBank}
                 onChange={(e) => setSelectedBank(e.target.value)}
@@ -154,8 +139,12 @@ const FoodListing = () => {
                 required
               >
                 {bankOptions.map((bank) => (
-                  <option key={bank.bankID} value={bank.bankID}>
-                    {bank.name} ({Math.round(bank.distance)} km)
+                  <option
+                    key={bank.bankID}
+                    value={bank.bankID}
+                    title={bank.name}
+                  >
+                    {bank.name.length > 30 ? bank.name.slice(0, 30) + "..." : bank.name} ({Math.round(bank.distance)} km)
                   </option>
                 ))}
               </select>
@@ -191,12 +180,31 @@ const FoodListing = () => {
               <p className="text-sm text-gray-700 mb-2">
                 <strong>Expiration:</strong> {food.expirationDate}
               </p>
-              <p className="text-sm text-gray-700 mb-4">
+              <p className="text-sm text-gray-700 mb-2">
                 <strong>Types:</strong>{" "}
                 {food.foodTypes && food.foodTypes.length > 0
                   ? food.foodTypes.join(", ")
                   : "None"}
               </p>
+              {food.foodBank && (
+                <>
+                  <p className="text-sm text-blue-700 mb-1">
+                    <strong>Pickup:</strong>{" "}
+                    <span
+                      className="underline cursor-pointer"
+                      title={food.foodBank.name}
+                      onClick={() => openBankModal(food.foodBank)}
+                    >
+                      {food.foodBank.name.length > 30
+                        ? `${food.foodBank.name.slice(0, 30)}...`
+                        : food.foodBank.name}
+                    </span>
+                  </p>
+                  <p className="text-sm text-gray-600 mb-3">
+                    <strong>Distance:</strong> {Math.round(food.foodBank.distance)} km
+                  </p>
+                </>
+              )}
               <button
                 onClick={() => handleClaim(food.id)}
                 disabled={food.claimed}
@@ -211,11 +219,26 @@ const FoodListing = () => {
             </div>
           ))
         ) : (
-          <p className="text-center text-lg text-gray-500">
-            ❌ No food available.
-          </p>
+          <p className="text-center text-lg text-gray-500">❌ No food available.</p>
         )}
       </div>
+
+      {/* Modal for food bank info */}
+      {selectedBankInfo && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full relative">
+            <button
+              onClick={closeBankModal}
+              className="absolute top-2 right-2 text-gray-600 hover:text-black text-xl"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4">{selectedBankInfo.name}</h2>
+            <p><strong>Address:</strong> {selectedBankInfo.address}</p>
+            <p><strong>Distance:</strong> {Math.round(selectedBankInfo.distance)} km</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

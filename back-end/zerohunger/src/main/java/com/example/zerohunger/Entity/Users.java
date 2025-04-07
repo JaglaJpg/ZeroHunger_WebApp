@@ -2,6 +2,8 @@ package com.example.zerohunger.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +35,7 @@ public class Users {
 	
 	//Relation to userStats table, Primary key of users is also primary AND foreign key for userStats
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private userStats stats;
     
     

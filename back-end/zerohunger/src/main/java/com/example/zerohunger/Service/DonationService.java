@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.zerohunger.DTO.BankOptionsDTO;
 import com.example.zerohunger.DTO.OngoingDonationDTO;
 import com.example.zerohunger.Entity.DonationStatus;
+import com.example.zerohunger.Entity.DonationType;
 import com.example.zerohunger.Entity.FoodBank;
 import com.example.zerohunger.Entity.OngoingDonations;
 import com.example.zerohunger.Entity.Users;
@@ -30,22 +31,26 @@ public class DonationService {
     private final FoodBankRepo foodBankRepo;
     private final UsersService userService;
     private final LocationService location;
+    private final StatsService stats;
 
     @Autowired
     public DonationService(
         DonationRepo donationRepo,
         UsersService userService,
         FoodBankRepo foodBankRepo,
-        LocationService location
+        LocationService location,
+        StatsService stats
     ) {
         this.donationRepo = donationRepo;
         this.userService = userService;
         this.foodBankRepo = foodBankRepo;
         this.location = location;
+        this.stats = stats;
     }
 
     // Create a new donation record
-    public OngoingDonations StartDonation(Long recipientID, Users donor, FoodBank bank, String name) {
+    public OngoingDonations StartDonation(Long recipientID, Users donor, FoodBank bank, 
+    		String name, DonationType type) {
         Users recipient = userService.fetchUser(recipientID); //recipientID will be the one in the request for claiming a donation, the 
         													  //user is then fetched
         LocalDateTime date = LocalDateTime.now(); //time stamp set
@@ -57,7 +62,14 @@ public class DonationService {
         donation.setTimestamp(date);
         donation.setName(name);
         donation.setStatus(DonationStatus.PENDING);
-        donationRepo.save(donation);
+        donation.setType(type);
+        try {
+            donationRepo.save(donation);
+            logger.info("✅ Donation saved");
+        } catch (Exception e) {
+            logger.error("❌ Failed to save donation: {}", e.getMessage(), e);
+        }
+
         logger.info("New donation created between donor {} and recipient {}", donor.getUserID(), recipientID);
 
         return donation;
@@ -70,6 +82,26 @@ public class DonationService {
 
         return true;
     }
+    
+    @Transactional
+    public Boolean finishDonation(Long id) {
+        try {
+            OngoingDonations donation = donationRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Donation not found"));
+
+            Long donorID = donation.getDonor().getUserID();
+            DonationType type = donation.getType();
+
+            donationRepo.deleteById(id);
+            stats.IncrementDonation(donorID, type);
+
+            return true;
+        } catch (Exception e) {
+            logger.error("Failed to finish donation: {}", e.getMessage());
+            throw new RuntimeException("Failed to finalize donation");
+        }
+    }
+
 
     // Fetch list of donation DTOs
     public List<OngoingDonationDTO> fetchDonations(Long ID) {

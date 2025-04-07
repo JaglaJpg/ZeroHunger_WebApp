@@ -70,7 +70,7 @@ public class ListingController {
     	for(FoodListings x : listings) {
     		FoodBank foodBank = x.getFoodBank();
     		double distance = location.calculateDistance(user.getLat(), user.getLong(), foodBank.getLat(), foodBank.getLong());
-    		x.setDistance(distance);
+    		foodBank.setDistance(distance);
     	}
         return ResponseEntity.ok(listings);
     }

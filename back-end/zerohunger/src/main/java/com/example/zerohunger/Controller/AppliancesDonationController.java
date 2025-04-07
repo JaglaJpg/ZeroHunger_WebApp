@@ -50,7 +50,7 @@ public class AppliancesDonationController {
 			for(AppliancesDonation x: donations) {
 				FoodBank bank = x.getFoodBank();
 				double Distance = locationService.calculateDistance(user.getLat(), user.getLong(), bank.getLat(), bank.getLong());
-				x.setDistance(Distance);
+				bank.setDistance(Distance);
 			}
 			return ResponseEntity.ok(donations);
 		} catch (Exception e) {

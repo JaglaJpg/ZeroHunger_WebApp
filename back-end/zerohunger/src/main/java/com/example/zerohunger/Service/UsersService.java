@@ -41,11 +41,8 @@ public class UsersService {
 			user.setLat(coords.getLatitude());
 			user.setLong(coords.getLongitude());
 	        userStats stats = new userStats();
-	        stats.setUserID(user);
-	        stats.setTotalSaved(0);
-	        stats.setTotalWasted(0);
-	        stats.setWastedLastMonth(0);
-	        stats.setWastedLastWeek(0);
+	        stats.setUser(user);
+	        
 	        
 	        user.setStats(stats);
 			usersRepo.save(user);
@@ -58,7 +55,7 @@ public class UsersService {
 	
 	public boolean verifyAge(LocalDate dob) {
 		LocalDate today = LocalDate.now();
-		int age = Period.between(today,  dob).getYears();
+		int age = Period.between(dob, today).getYears();
 		
 		if(age < 16) {
 			return false;

@@ -2,21 +2,17 @@ package com.example.zerohunger.Configuration;
 
 import com.example.zerohunger.Service.SessionService;
 import com.example.zerohunger.Utility.TokenUtil;
-import com.example.zerohunger.Entity.Users;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean securityEnabled;
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        // ✅ Skip JWT filtering for public endpoints like /auth/*
+        String path = request.getRequestURI();
+        return path.startsWith("/auth") || path.startsWith("/h2-console");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -43,7 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // Step 1: Extract tokens from cookies
         String accessToken = null;
         String refreshToken = null;
 
@@ -60,23 +62,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         Long userId = null;
 
-        // Step 2: Check access token
         if (accessToken != null && tokenUtil.validateToken(accessToken)) {
             userId = tokenUtil.extractUserId(accessToken);
-        }
-
-        // Step 3: If access token is invalid/expired → try refresh token
-        else if (refreshToken != null && tokenUtil.validateToken(refreshToken)) {
+        } else if (refreshToken != null && tokenUtil.validateToken(refreshToken)) {
             userId = tokenUtil.extractUserId(refreshToken);
             if (sessionService.isRefreshTokenValid(refreshToken, userId)) {
-                // Generate a new access token
                 String newAccessToken = tokenUtil.generateAccessToken(userId);
-
-                // Set it back as a cookie
                 Cookie newAccessCookie = new Cookie("accessToken", newAccessToken);
                 newAccessCookie.setHttpOnly(true);
                 newAccessCookie.setPath("/");
-                newAccessCookie.setMaxAge(60 * 60); // 1 hour
+                newAccessCookie.setMaxAge(60 * 60);
                 response.addCookie(newAccessCookie);
             } else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -84,7 +79,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // Step 4: If user ID is set, store in SecurityContext
         if (userId != null) {
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userId, null, List.of());

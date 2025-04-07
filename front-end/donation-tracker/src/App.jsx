@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import './App.css'
-import React from "react";
-import FoodListing from "./components/FoodListing";
+import React from 'react';
+import DonationLanding from './DonationLanding'; // adjust path if needed
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <FoodListing />
+    <div className="App">
+      <DonationLanding />
     </div>
   );
 }
 
-export default App
+export default App;

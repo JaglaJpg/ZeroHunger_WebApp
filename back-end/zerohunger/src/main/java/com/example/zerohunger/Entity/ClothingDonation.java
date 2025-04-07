@@ -45,8 +45,6 @@ public class ClothingDonation {
 
     private boolean isAvailable = true;
 
-    @Transient
-    private double distance;
 
     // Getters and Setters
 
@@ -146,11 +144,4 @@ public class ClothingDonation {
         isAvailable = available;
     }
 
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
 }

@@ -5,6 +5,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -74,29 +77,56 @@ public class LocationService {
         try {
             // 🔹 Encode the address for a URL
             String encodedAddress = URLEncoder.encode(address, StandardCharsets.UTF_8);
-
-            // 🔹 OpenStreetMap Nominatim API URL
             String url = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodedAddress;
 
-            // 🔹 Call API and get response as an array
-            ResponseEntity<Map[]> response = restTemplate.getForEntity(url, Map[].class);
+            // 🔹 Add required headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("User-Agent", "ZeroHungerApp/1.0 (contact@zerohunger.org)");
+            headers.set("Accept", "application/json");
+            headers.set("Accept-Language", "en");
 
-            // 🔹 Check if the response contains any data
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // 🪵 DEBUG LOGGING
+            System.out.println("🔍 Requesting coordinates for address: " + address);
+            System.out.println("👉 Encoded URL: " + url);
+            System.out.println("👉 Request Headers: " + headers);
+
+            // 🔍 Use exchange() to include headers and inspect raw response
+            ResponseEntity<String> rawResponse = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                String.class
+            );
+
+            System.out.println("📦 Raw Response Body:\n" + rawResponse.getBody());
+
+            // 🔁 Convert response to Map[]
+            ResponseEntity<Map[]> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                entity,
+                Map[].class
+            );
+
             if (response.getBody() != null && response.getBody().length > 0) {
                 Map<String, Object> locationData = response.getBody()[0];
 
-                // 🔹 Extract latitude & longitude
                 double lat = Double.parseDouble(locationData.get("lat").toString());
                 double lon = Double.parseDouble(locationData.get("lon").toString());
 
+                System.out.println("✅ Parsed Coordinates: lat=" + lat + ", lon=" + lon);
                 return new Coordinates(lat, lon);
             } else {
                 throw new RuntimeException("No coordinates found for address: " + address);
             }
         } catch (Exception e) {
+            System.err.println("❌ Exception while fetching coordinates: " + e.getMessage());
             throw new RuntimeException("Error getting coordinates for address: " + address, e);
         }
     }
+
     
     //calculates km distance between two sets of coordinates
     public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

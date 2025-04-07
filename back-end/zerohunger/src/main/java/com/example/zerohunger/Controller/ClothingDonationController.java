@@ -64,7 +64,7 @@ public class ClothingDonationController {
             for (ClothingDonation donation : donations) {
                 FoodBank bank = donation.getFoodBank();
                 double distance = locationService.calculateDistance(user.getLat(), user.getLong(), bank.getLat(), bank.getLong());
-                donation.setDistance(distance);
+                bank.setDistance(distance);
             }
 
             return ResponseEntity.ok(donations);

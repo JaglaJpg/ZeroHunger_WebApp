@@ -1,11 +1,18 @@
 package com.example.zerohunger.Service;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.zerohunger.DTO.MonthlyFoodStatsDTO;
+import com.example.zerohunger.DTO.WeeklyFoodStatsDTO;
 import com.example.zerohunger.Entity.FoodItems;
 import com.example.zerohunger.Entity.FoodStatus;
 import com.example.zerohunger.Entity.Users;
@@ -41,9 +48,7 @@ public class FoodService {
 	}
 	
 	public List<FoodItems> getUserFood(Long userId){
-		Users user = new Users();
-		user.setUserID(userId);
-		return foodRepo.getFridge(user);
+		return foodRepo.getFridge(userId);
 	}
 	
 	//Method for marking food as used or wasted in the foodItems table.
@@ -69,9 +74,45 @@ public class FoodService {
 	//Method that calls query that removes all food from foodItems that was marked over a month ago
 	public void removeOldFood() {
 		LocalDate date = LocalDate.now();
-		LocalDate old = date.minusMonths(1);
+		LocalDate old = date.minusMonths(6);
 		
 		foodRepo.removeOldFood(old);
+	}
+	
+	public List<MonthlyFoodStatsDTO> getMonthlyStats(Long userID) {
+		List<MonthlyFoodStatsDTO> stats = new ArrayList<>();
+		for(int x = 5; x<=0; x++) {
+			
+			LocalDate date = LocalDate.now().minusMonths(x);
+			LocalDate from = date.with(TemporalAdjusters.firstDayOfMonth());
+			LocalDate to = date.with(TemporalAdjusters.lastDayOfMonth()).plusDays(1);
+			String monthName = date.getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH);
+			int saved = foodRepo.getFoodCountBetween(from, to, userID, FoodStatus.USED);
+			int wasted = foodRepo.getFoodCountBetween(from, to, userID, FoodStatus.WASTED);
+			MonthlyFoodStatsDTO stat = new MonthlyFoodStatsDTO(monthName, saved, wasted);
+			stats.add(stat);
+		}
+		
+		return stats;
+	}
+	
+	public List<WeeklyFoodStatsDTO> getWeeklyStats(Long userID) {
+	    List<WeeklyFoodStatsDTO> stats = new ArrayList<>();
+
+	    for (int i = 7; i >= 0; i--) {
+	        LocalDate startOfWeek = LocalDate.now().minusWeeks(i).with(DayOfWeek.MONDAY);
+	        LocalDate endOfWeek = startOfWeek.plusDays(7); // exclusive upper bound
+
+	        String label = "Week " + (8 - i);
+
+	        int saved = foodRepo.getFoodCountBetween(startOfWeek, endOfWeek, userID, FoodStatus.USED);
+	        int wasted = foodRepo.getFoodCountBetween(startOfWeek, endOfWeek, userID, FoodStatus.WASTED);
+
+	        WeeklyFoodStatsDTO stat = new WeeklyFoodStatsDTO(label, saved, wasted);
+	        stats.add(stat);
+	    }
+
+	    return stats;
 	}
 	
 	//Method that counts all food marked within last week and all food marked within last month and updates the relevant field in userStats

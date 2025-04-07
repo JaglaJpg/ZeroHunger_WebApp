@@ -38,6 +38,11 @@ public class OngoingDonations {
     
     private LocalDateTime timestamp;
     private String name;
+    @Enumerated(EnumType.STRING)
+    private DonationType type;
+    
+    public DonationType getType() {return  type;}
+    public void setType(DonationType type) {this.type = type;}
 
     public Long getDonationID() {
         return donationID;

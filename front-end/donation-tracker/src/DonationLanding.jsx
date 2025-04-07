@@ -5,7 +5,6 @@ function DonationLanding() {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userType, setUserType] = useState('donor'); // Hardcoded for now
 
   useEffect(() => {
     fetchDonations();
@@ -34,7 +33,6 @@ function DonationLanding() {
     }
   };
 
-
   const updateDonationStatus = async (id, newStatus) => {
     try {
       const response = await fetch('http://localhost:8080/donations/updateStatus', {
@@ -49,21 +47,27 @@ function DonationLanding() {
         })
       });
 
-      if (!response.ok) {
-        throw new Error(`Status update failed with status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Update response:', data);
-
-      // Refresh the list
+      if (!response.ok) throw new Error(`Status update failed with status: ${response.status}`);
+      await response.json();
       fetchDonations();
-
     } catch (err) {
       console.error('Error updating donation status:', err);
     }
   };
 
+  const finishDonation = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:8080/donations/claim/${id}`, {
+        method: 'PUT',
+        credentials: 'include',
+      });
+
+      if (!response.ok) throw new Error(`Claim failed with status: ${response.status}`);
+      fetchDonations();
+    } catch (err) {
+      console.error('Error claiming donation:', err);
+    }
+  };
 
   if (loading) return <div className="loading">Loading donations...</div>;
   if (error) return <div className="error">Error: {error}</div>;
@@ -104,7 +108,15 @@ function DonationLanding() {
                           <option value="ONGOING">Ongoing</option>
                           <option value="DELIVERED">Delivered</option>
                         </select>
+                      )}
 
+                      {donation.userType === 'recipient' && donation.status === 'DELIVERED' && (
+                        <button
+                          className="claim-button"
+                          onClick={() => finishDonation(donation.donationId)}
+                        >
+                          Mark as Claimed
+                        </button>
                       )}
                     </div>
                   </div>
@@ -118,7 +130,7 @@ function DonationLanding() {
       </main>
 
       <footer>
-        <p>© 2023 Community Sharing Platform. Aligned with UN Sustainable Development Goals.</p>
+        <p>© 2025 Community Sharing Platform. Aligned with UN Sustainable Development Goals.</p>
       </footer>
     </div>
   );

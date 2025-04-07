@@ -35,8 +35,16 @@ public interface FoodRepo extends JpaRepository<FoodItems, Long> {
 	@Query("SELECT COUNT(f) FROM FoodItems f WHERE f.statusChanged > :date AND f.user.userID = :Id")
 	int getFoodCountSince(@Param("date") LocalDate date, @Param("Id") Long Id);
 	
-	@Query("SELECT f FROM FoodItems f WHERE f.statusChanged IS NULL AND f.user = :user")
-	List<FoodItems> getFridge(@Param("user") Users user);
+	@Query("SELECT f FROM FoodItems f WHERE f.statusChanged IS NULL AND f.user.userID = :userID")
+	List<FoodItems> getFridge(@Param("userID") Long userID);
+	
+	@Query("SELECT COUNT(f) "
+			+ "FROM FoodItems f "
+			+ "WHERE f.statusChanged > :old "
+			+ "AND f.statusChanged < :newer "
+			+ "AND f.user.userID = :Id "
+			+ "AND f.status = :status")
+	int getFoodCountBetween(@Param("old") LocalDate old, @Param("newer") LocalDate newer, @Param("Id") Long Id, @Param("status") FoodStatus status);
 
 
 

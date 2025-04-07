@@ -48,13 +48,20 @@ public class DonationController {
 	@GetMapping("/fetchDonations")
 	public ResponseEntity<?> fetchUserDonations() {
 	    // For testing — replace with real userId if needed
-	    long userId = 3432;
+	    long userId = 1212;
 
 	    try {
 	        return ResponseEntity.ok(donationService.fetchDonations(userId)); //returns ongoing donations linked to the user
 	    } catch (Exception e) {
 	        return ResponseEntity.status(500).body("Failed to fetch donations: " + e.getMessage());
 	    }
+	}
+	
+	@PutMapping("/claim/{ID}")
+	public ResponseEntity<?> finishDonation(@PathVariable Long ID){
+		donationService.finishDonation(ID);
+		
+		return ResponseEntity.ok(null);
 	}
 	
 	@PatchMapping("/updateStatus")

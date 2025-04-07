@@ -1,5 +1,8 @@
 package com.example.zerohunger.Controller;
 
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.zerohunger.DTO.MarkFoodDTO;
+import com.example.zerohunger.DTO.MonthlyFoodStatsDTO;
 import com.example.zerohunger.DTO.UserStatsDTO;
+import com.example.zerohunger.DTO.WeeklyFoodStatsDTO;
 import com.example.zerohunger.Entity.FoodItems;
 import com.example.zerohunger.Entity.FoodStatus;
 import com.example.zerohunger.Service.FoodService;
@@ -41,16 +46,37 @@ public class UserController {
     
     @GetMapping("/stats")
     public ResponseEntity<?> getUserStats(){
-    	Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
+    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	long userId = 1111;
+    	
         UserStatsDTO stats = statsService.getUserStats(userId);
         
         return ResponseEntity.ok(stats);
     }
     
+    @GetMapping("/monthly")
+    public ResponseEntity<?> getMonthlyStats(){
+    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	long userId = 1111;
+    	
+    	List<MonthlyFoodStatsDTO> stats = foodService.getMonthlyStats(userId);
+    	
+    	return ResponseEntity.ok(stats);
+    }
+    
+    @GetMapping("/weekly")
+    public ResponseEntity<?> getWeeklyStats(){
+    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	long userId = 1111;
+    	
+    	List<WeeklyFoodStatsDTO> stats = foodService.getWeeklyStats(userId);
+    	
+    	return ResponseEntity.ok(stats);
+    }
+    
     @PostMapping("/addFood")
     public ResponseEntity<?> addFood(@RequestBody FoodItems foodItem) {
-        long userID = 3432; // ✅ Temporary User ID for testing
+        long userID = 1111; // ✅ Temporary User ID for testing
         
         FoodItems savedItem =foodService.AddFood(foodItem, userID);
 
@@ -59,7 +85,7 @@ public class UserController {
     
     @GetMapping("/getFood")
     public ResponseEntity<?> getFood() {
-    	long userID = 3432;
+    	long userID = 1111;
 
         return ResponseEntity.ok(foodService.getUserFood(userID));
     }
@@ -86,6 +112,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    
     
     
 

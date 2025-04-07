@@ -3,6 +3,7 @@ package com.example.zerohunger.Entity;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "FoodListings")
@@ -30,8 +31,7 @@ public class FoodListings {
     @ManyToOne
     @JoinColumn(name = "foodBankID")
     private FoodBank foodBank;
-    @Transient
-    private double distance;
+
 
     // ✅ Default Constructor
     public FoodListings() {}
@@ -96,14 +96,6 @@ public class FoodListings {
 
     public void setFoodBank(FoodBank foodBank) {
         this.foodBank = foodBank;
-    }
-    
-    public double getDistance() {
-        return this.distance;
-    }
-
-    public void setDistance(double distance) {
-    	this.distance = distance;
     }
     
 }
