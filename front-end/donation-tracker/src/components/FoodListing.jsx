@@ -11,14 +11,18 @@ const FoodListing = () => {
   const [selectedBankInfo, setSelectedBankInfo] = useState(null);
 
   const fetchListings = () => {
-    fetch("http://localhost:8080/listings")
+    fetch("http://localhost:8080/listings", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setFoodItems(data))
       .catch((error) => console.error("Error fetching food items:", error));
   };
 
   const fetchBankOptions = () => {
-    fetch("http://localhost:8080/donations/bankOptions")
+    fetch("http://localhost:8080/donations/bankOptions", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setBankOptions(data);
@@ -31,7 +35,7 @@ const FoodListing = () => {
 
   useEffect(() => {
     fetchListings();
-    fetchBankOptions();
+    fetchBankOptions(); // ✅ this was missing before
   }, []);
 
   const handleSubmit = async (e) => {
@@ -47,6 +51,7 @@ const FoodListing = () => {
       const response = await fetch("http://localhost:8080/listings/AddFood", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(newFoodItem),
       });
 
@@ -66,10 +71,10 @@ const FoodListing = () => {
 
   const handleClaim = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/listings/claim/${id}`,
-        { method: "PUT" }
-      );
+      const response = await fetch(`http://localhost:8080/listings/claim/${id}`, {
+        method: "PUT",
+        credentials: "include",
+      });
 
       if (!response.ok) throw new Error("Failed to claim food");
 
@@ -88,7 +93,6 @@ const FoodListing = () => {
     <div className="min-h-screen bg-gray-50 text-gray-900 flex flex-col items-center p-6">
       <h1 className="text-5xl font-bold text-center mb-8">🍽️ Food Listings</h1>
 
-      {/* Form to Add Food */}
       {showForm && (
         <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg mx-auto mb-10">
           <h2 className="text-3xl font-bold mb-5">➕ Add Food Item</h2>
@@ -139,12 +143,11 @@ const FoodListing = () => {
                 required
               >
                 {bankOptions.map((bank) => (
-                  <option
-                    key={bank.bankID}
-                    value={bank.bankID}
-                    title={bank.name}
-                  >
-                    {bank.name.length > 30 ? bank.name.slice(0, 30) + "..." : bank.name} ({Math.round(bank.distance)} km)
+                  <option key={bank.bankID} value={bank.bankID} title={bank.name}>
+                    {bank.name.length > 30
+                      ? bank.name.slice(0, 30) + "..."
+                      : bank.name}{" "}
+                    ({Math.round(bank.distance)} km)
                   </option>
                 ))}
               </select>

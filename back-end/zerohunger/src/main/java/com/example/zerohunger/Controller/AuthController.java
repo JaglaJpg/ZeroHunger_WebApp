@@ -69,7 +69,9 @@ public class AuthController {
 	
 	@PostMapping("/logout")
 	public ResponseEntity<?> logOut(HttpServletResponse response){
-		 Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = Long.parseLong(principal);
+
 		//long userId = 1111;
 		 sessionService.CleanUpSession(userId);
 		 

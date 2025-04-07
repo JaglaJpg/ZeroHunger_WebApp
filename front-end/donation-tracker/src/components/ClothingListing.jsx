@@ -17,12 +17,16 @@ const ClothingListing = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/cloth/listings")
+    fetch("http://localhost:8080/cloth/listings", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setClothes(data))
       .catch((err) => console.error("Fetch clothes error:", err));
-
-    fetch("http://localhost:8080/donations/bankOptions")
+  
+    fetch("http://localhost:8080/donations/bankOptions", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setBankOptions(data);
@@ -30,22 +34,23 @@ const ClothingListing = () => {
       })
       .catch((err) => console.error("Bank fetch error:", err));
   }, []);
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     const clothData = { ...form, foodBankID: selectedBank };
-
+  
     const payload = new FormData();
     payload.append(
       "clothData",
       new Blob([JSON.stringify(clothData)], { type: "application/json" })
     );
     if (form.image) payload.append("image", form.image);
-
+  
     try {
       const res = await fetch("http://localhost:8080/cloth/donate", {
         method: "POST",
-        body: payload
+        body: payload,
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Submit failed");
       alert("Clothing donation submitted!");
@@ -57,30 +62,36 @@ const ClothingListing = () => {
         category: "",
         brandName: "",
         condition: "",
-        image: null
+        image: null,
       });
-      const refresh = await fetch("http://localhost:8080/cloth/listings");
+      const refresh = await fetch("http://localhost:8080/cloth/listings", {
+        credentials: "include",
+      });
       setClothes(await refresh.json());
     } catch (err) {
       console.error("Submit error:", err);
       alert("Could not submit clothing donation.");
     }
   };
-
+  
   const handleClaim = async (id) => {
     try {
       const res = await fetch(`http://localhost:8080/cloth/claim/${id}`, {
-        method: "POST"
+        method: "POST",
+        credentials: "include",
       });
       if (!res.ok) throw new Error("Claim failed");
       alert("Clothing item claimed!");
-      const refresh = await fetch("http://localhost:8080/cloth/listings");
+      const refresh = await fetch("http://localhost:8080/cloth/listings", {
+        credentials: "include",
+      });
       setClothes(await refresh.json());
     } catch (err) {
       console.error("Claim error:", err);
       alert("Failed to claim this item.");
     }
   };
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] p-6 font-[Poppins]">

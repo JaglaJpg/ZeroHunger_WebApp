@@ -15,70 +15,83 @@ const ApplianceListing = () => {
         image: null,
     });
 
-    useEffect(() => {
-        fetch("http://localhost:8080/appliances/listings")
-            .then((res) => res.json())
-            .then((data) => setAppliances(data))
-            .catch((err) => console.error("Fetch appliance error:", err));
+// ...same imports and useState as before...
 
-        fetch("http://localhost:8080/donations/bankOptions")
-            .then((res) => res.json())
-            .then((data) => {
-                setBankOptions(data);
-                if (data.length > 0) setSelectedBank(data[0].bankID);
-            })
-            .catch((err) => console.error("Bank fetch error:", err));
-    }, []);
+useEffect(() => {
+    fetch("http://localhost:8080/appliances/listings", {
+        credentials: "include",
+    })
+        .then((res) => res.json())
+        .then((data) => setAppliances(data))
+        .catch((err) => console.error("Fetch appliance error:", err));
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const applianceData = { ...form, foodBankID: selectedBank };
+    fetch("http://localhost:8080/donations/bankOptions", {
+        credentials: "include",
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            setBankOptions(data);
+            if (data.length > 0) setSelectedBank(data[0].bankID);
+        })
+        .catch((err) => console.error("Bank fetch error:", err));
+}, []);
 
-        const payload = new FormData();
-        payload.append(
-            "applianceData",
-            new Blob([JSON.stringify(applianceData)], { type: "application/json" })
-        );
-        if (form.image) payload.append("image", form.image);
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    const applianceData = { ...form, foodBankID: selectedBank };
 
-        try {
-            const res = await fetch("http://localhost:8080/appliances/donate", {
-                method: "POST",
-                body: payload,
-            });
-            if (!res.ok) throw new Error("Submit failed");
-            alert("Appliance donation submitted!");
-            setShowForm(false);
-            setForm({
-                applianceName: "",
-                make: "",
-                model: "",
-                specs: "",
-                condition: "",
-                image: null,
-            });
-            const refreshed = await fetch("http://localhost:8080/appliances/listings");
-            setAppliances(await refreshed.json());
-        } catch (err) {
-            console.error("Submit error:", err);
-            alert("Could not submit appliance donation.");
-        }
-    };
+    const payload = new FormData();
+    payload.append(
+        "applianceData",
+        new Blob([JSON.stringify(applianceData)], { type: "application/json" })
+    );
+    if (form.image) payload.append("image", form.image);
 
-    const handleClaim = async (id) => {
-        try {
-            const res = await fetch(`http://localhost:8080/appliances/claim/${id}`, {
-                method: "POST",
-            });
-            if (!res.ok) throw new Error("Claim failed");
-            alert("Appliance claimed successfully!");
-            const refreshed = await fetch("http://localhost:8080/appliances/listings");
-            setAppliances(await refreshed.json());
-        } catch (err) {
-            console.error("Claim error:", err);
-            alert("Failed to claim this donation.");
-        }
-    };
+    try {
+        const res = await fetch("http://localhost:8080/appliances/donate", {
+            method: "POST",
+            body: payload,
+            credentials: "include",
+        });
+        if (!res.ok) throw new Error("Submit failed");
+        alert("Appliance donation submitted!");
+        setShowForm(false);
+        setForm({
+            applianceName: "",
+            make: "",
+            model: "",
+            specs: "",
+            condition: "",
+            image: null,
+        });
+        const refreshed = await fetch("http://localhost:8080/appliances/listings", {
+            credentials: "include",
+        });
+        setAppliances(await refreshed.json());
+    } catch (err) {
+        console.error("Submit error:", err);
+        alert("Could not submit appliance donation.");
+    }
+};
+
+const handleClaim = async (id) => {
+    try {
+        const res = await fetch(`http://localhost:8080/appliances/claim/${id}`, {
+            method: "POST",
+            credentials: "include",
+        });
+        if (!res.ok) throw new Error("Claim failed");
+        alert("Appliance claimed successfully!");
+        const refreshed = await fetch("http://localhost:8080/appliances/listings", {
+            credentials: "include",
+        });
+        setAppliances(await refreshed.json());
+    } catch (err) {
+        console.error("Claim error:", err);
+        alert("Failed to claim this donation.");
+    }
+};
+
 
     return (
         <div className="min-h-screen bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] p-6 font-[Poppins]">
