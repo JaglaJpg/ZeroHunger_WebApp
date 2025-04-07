@@ -59,9 +59,9 @@ public class SessionService {
 		
 	}
 	
-	public Boolean CleanUpSession(Users userID) {
-		refreshRepo.deleteByUserID(userID);
-		seshRepo.deleteByUserID(userID);
+	public Boolean CleanUpSession(Long userID) {
+		refreshRepo.deleteByUserID_UserID(userID);
+		seshRepo.deleteByUserID_UserID(userID);
 		
 		return true;
 	}

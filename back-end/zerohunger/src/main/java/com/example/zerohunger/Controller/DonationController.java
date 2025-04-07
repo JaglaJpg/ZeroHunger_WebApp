@@ -48,7 +48,7 @@ public class DonationController {
 	@GetMapping("/fetchDonations")
 	public ResponseEntity<?> fetchUserDonations() {
 	    // For testing — replace with real userId if needed
-	    long userId = 1212;
+	    long userId = 1111;
 
 	    try {
 	        return ResponseEntity.ok(donationService.fetchDonations(userId)); //returns ongoing donations linked to the user

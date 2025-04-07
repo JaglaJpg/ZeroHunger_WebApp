@@ -15,7 +15,5 @@ import com.example.zerohunger.Entity.Users;
 @Repository
 public interface SessionRepo extends JpaRepository<Sessions, Long> {
 
-	@Modifying
-	@Query("DELETE FROM Sessions s WHERE s.userID = :userID")
-	void deleteByUserID(@Param("userID")Users userID);
+	void deleteByUserID_UserID(Long userID);
 }

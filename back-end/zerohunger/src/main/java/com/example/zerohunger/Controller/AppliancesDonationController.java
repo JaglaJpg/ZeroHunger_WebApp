@@ -43,7 +43,7 @@ public class AppliancesDonationController {
 	public ResponseEntity<?> getAllDonations() {
 		try {
 			//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	        long userId = 1212;
+	        long userId = 1111;
 	        Users user = userService.fetchUser(userId);
 			List<AppliancesDonation> donations = applianceDonationService.getAllAvailableDonations();
 			
@@ -93,7 +93,7 @@ public class AppliancesDonationController {
 	@PostMapping("/claim/{donationId}")
 	public ResponseEntity<?> claimDonation(@PathVariable Long donationId) {
 		//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        long userId = 1212;
+        long userId = 1111;
 		
 		boolean success = applianceDonationService.claimDonation(donationId);
 		if (success) {

@@ -2,6 +2,7 @@ package com.example.zerohunger.Controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,21 +56,29 @@ public class AuthController {
 		
 		SessionTokens tokens = sessionService.CreateSession(loginResponse.getUser());
 		
-        Cookie accessTokenCookie = new Cookie("accessToken", tokens.getAccessToken());
-        accessTokenCookie.setHttpOnly(true);
-        accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60 * 60);
+		response.setHeader("Set-Cookie", "accessToken=" + tokens.getAccessToken()
+	    + "; HttpOnly; Path=/; Max-Age=3600; SameSite=None; Secure");
 
-        Cookie refreshTokenCookie = new Cookie("refreshToken", tokens.getRefreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60);
-
-        response.addCookie(accessTokenCookie);
-        response.addCookie(refreshTokenCookie);
+	response.addHeader("Set-Cookie", "refreshToken=" + tokens.getRefreshToken()
+	    + "; HttpOnly; Path=/; Max-Age=604800; SameSite=None; Secure");
 
         return ResponseEntity.ok("User signed in successfully");
 		
 		
+	}
+	
+	@PostMapping("/logout")
+	public ResponseEntity<?> logOut(HttpServletResponse response){
+		 Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		//long userId = 1111;
+		 sessionService.CleanUpSession(userId);
+		 
+		 
+		 response.setHeader("Set-Cookie", "accessToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
+		 response.addHeader("Set-Cookie", "refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
+
+		 
+		 return ResponseEntity.ok(null);
+		 
 	}
 }
