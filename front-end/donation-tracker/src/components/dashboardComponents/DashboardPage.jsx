@@ -15,7 +15,6 @@ import { Overview } from '../dashboardComponents/Overview';
 import { Carrot, Leaf, ShoppingBag, Utensils } from 'lucide-react';
 import MyFridge from '../dashboardComponents/MyFridge';
 
-
 export default function DashboardPage() {
   const [summaryData, setSummaryData] = useState(null);
   const [monthlyData, setMonthlyData] = useState([]);
@@ -27,16 +26,13 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       if (mockMode) return;
-
       try {
         setLoading(true);
-
         const [statsRes, monthlyRes, weeklyRes] = await Promise.all([
           fetch('http://localhost:8080/user/stats', { credentials: 'include' }),
           fetch('http://localhost:8080/user/monthly', { credentials: 'include' }),
           fetch('http://localhost:8080/user/weekly', { credentials: 'include' }),
         ]);
-
         const stats = await statsRes.json();
         const monthly = await monthlyRes.json();
         const weekly = await weeklyRes.json();
@@ -54,7 +50,6 @@ export default function DashboardPage() {
         setLoading(false);
       }
     };
-
     fetchData();
   }, [mockMode]);
 
@@ -73,7 +68,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <div className='flex min-h-screen w-full flex-col bg-gradient-to-b from-amber-50 to-white'>
+    <div className='flex min-h-screen w-full flex-col bg-gradient-to-b from-amber-50 to-white font-[Poppins] text-gray-800'>
       <div className='border-b border-slate-200 bg-white/50 backdrop-blur-sm'>
         <div className='flex h-16 items-center px-4 md:px-8 justify-between'>
           <div className='flex items-center gap-2'>
@@ -132,10 +127,28 @@ export default function DashboardPage() {
 
         <Tabs defaultValue='overview' className='space-y-6'>
           <TabsList className='bg-white/70 backdrop-blur-sm'>
-            <TabsTrigger value='overview'>Overview</TabsTrigger>
-            <TabsTrigger value='food-waste'>Food Waste</TabsTrigger>
-            <TabsTrigger value='donations'>Donations</TabsTrigger>
+            <TabsTrigger
+              value='overview'
+              className='text-white bg-gray-900 data-[state=inactive]:text-gray-300 data-[state=inactive]:bg-gray-800 data-[state=active]:text-white data-[state=active]:bg-black'
+            >
+              Overview
+            </TabsTrigger>
+            <TabsTrigger
+              value='food-waste'
+              className='text-white bg-gray-900 data-[state=inactive]:text-gray-300 data-[state=inactive]:bg-gray-800 data-[state=active]:text-white data-[state=active]:bg-black'
+            >
+              Food Waste
+            </TabsTrigger>
+
+            <TabsTrigger
+              value='donations'
+              className='text-white bg-gray-900 data-[state=inactive]:text-gray-300 data-[state=inactive]:bg-gray-800 data-[state=active]:text-white data-[state=active]:bg-black'
+            >
+              Donations
+            </TabsTrigger>
+
           </TabsList>
+
 
           <TabsContent value='overview' className='space-y-6'>
             <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-7'>

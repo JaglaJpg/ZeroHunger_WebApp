@@ -14,12 +14,19 @@ import {
 
 export function FoodWasteOverTime({ data = [] }) {
   // Replace with API-connected data later
-  const chartData = data.length > 0 ? data : [
-    { name: 'Week 1', 'Food Wasted': 80, 'Food Saved': 240 },
-    { name: 'Week 2', 'Food Wasted': 75, 'Food Saved': 250 },
-    { name: 'Week 3', 'Food Wasted': 65, 'Food Saved': 270 },
-    { name: 'Week 4', 'Food Wasted': 60, 'Food Saved': 290 },
-  ];
+  const chartData = data.length > 0
+  ? data.map((entry) => ({
+      name: entry.name,
+      'Food Saved': entry.foodSaved,
+      'Food Wasted': entry.foodWasted,
+    }))
+  : [
+      { name: 'Week 1', 'Food Wasted': 80, 'Food Saved': 240 },
+      { name: 'Week 2', 'Food Wasted': 75, 'Food Saved': 250 },
+      { name: 'Week 3', 'Food Wasted': 65, 'Food Saved': 270 },
+      { name: 'Week 4', 'Food Wasted': 60, 'Food Saved': 290 },
+    ];
+
 
   return (
     <ResponsiveContainer width='100%' height={350}>

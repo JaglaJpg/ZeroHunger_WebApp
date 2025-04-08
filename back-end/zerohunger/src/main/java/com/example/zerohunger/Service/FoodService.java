@@ -81,7 +81,7 @@ public class FoodService {
 	
 	public List<MonthlyFoodStatsDTO> getMonthlyStats(Long userID) {
 		List<MonthlyFoodStatsDTO> stats = new ArrayList<>();
-		for(int x = 5; x<=0; x++) {
+		for(int x = 5; x>=0; x--) {
 			
 			LocalDate date = LocalDate.now().minusMonths(x);
 			LocalDate from = date.with(TemporalAdjusters.firstDayOfMonth());

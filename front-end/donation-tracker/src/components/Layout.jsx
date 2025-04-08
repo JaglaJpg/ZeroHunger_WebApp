@@ -19,9 +19,9 @@ const Layout = ({ isLoggedIn, setIsLoggedIn }) => {
         <nav className="flex justify-between items-center max-w-[1200px] w-full mx-auto px-4 py-6">
           <div className="flex items-center">
             {/* Shrink the logo so it doesn't dominate the navbar */}
-            <img className="w-8 h-8" src="/planet-earth.png" alt="Earth Logo" />
+            <img className="w-24 h-24" src="/planet-earth.png" alt="Earth Logo" />
             {/* Make the heading a bit smaller if desired */}
-            <h1 className="ml-2 text-xl font-bold">ZERO HUNGER</h1>
+            <h1 className="ml-2 text-xl font-bold text-black">ZERO HUNGER</h1>
           </div>
 
           {/* Reduce gap to something smaller than 4vw, like gap-4 or gap-6 */}

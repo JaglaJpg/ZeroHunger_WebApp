@@ -12,21 +12,28 @@ import {
 } from '@/components/ui/chart';
 
 export function Overview({ data = [] }) {
-  const chartData = data.length > 0 ? data : [
-    { name: 'Jan', Saved: 400, Wasted: 100 },
-    { name: 'Feb', Saved: 420, Wasted: 90 },
-    { name: 'Mar', Saved: 450, Wasted: 85 },
-    { name: 'Apr', Saved: 470, Wasted: 75 },
-    { name: 'May', Saved: 500, Wasted: 70 },
-    { name: 'Jun', Saved: 530, Wasted: 60 },
-  ];
+  const chartData = data.length > 0
+  ? data.map(entry => ({
+      name: entry.name,
+      Saved: entry.saved,
+      Wasted: entry.wasted,
+    }))
+  : [
+      { name: 'Jan', Saved: 400, Wasted: 100 },
+      { name: 'Feb', Saved: 420, Wasted: 90 },
+      { name: 'Mar', Saved: 450, Wasted: 85 },
+      { name: 'Apr', Saved: 470, Wasted: 75 },
+      { name: 'May', Saved: 500, Wasted: 70 },
+      { name: 'Jun', Saved: 530, Wasted: 60 },
+    ];
 
   return (
     <ResponsiveContainer width='100%' height={300}>
       <BarChart data={chartData}>
         <CartesianGrid strokeDasharray='3 3' stroke='#f0f0f0' />
         <XAxis dataKey='name' tick={{ fill: '#666' }} />
-        <YAxis tick={{ fill: '#666' }} />
+        <YAxis tick={{ fill: '#666' }} domain={[0, 'auto']} />
+
         <Tooltip
           contentStyle={{
             backgroundColor: 'white',
