@@ -1,7 +1,12 @@
-
 import './App.css'
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
 import Layout from "./components/Layout";
 import Home from "./components/Home";
 import Login from "./components/Login";
@@ -10,6 +15,7 @@ import ApplianceListing from "./components/ApplianceListing";
 import ClothingListing from "./components/ClothingListing";
 import FoodListing from "./components/FoodListing";
 import DonationLanding from "./components/DonationLanding";
+import PrivateRoute from "./components/PrivateRoute";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,14 +41,27 @@ const App = () => {
   return (
     <Router>
       <Routes>
-        <Route element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}> 
-          <Route path="/" element={<Home />} />
+        {/* 👇 Conditionally redirect / based on login */}
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
+          }
+        />
+
+        <Route element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}>
+          {/* Public */}
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/appliances" element={<ApplianceListing />} />
-          <Route path="/clothing" element={<ClothingListing />} />
-          <Route path="/food" element={<FoodListing />} />
-          <Route path="/donation-tracker" element={<DonationLanding />} />
+          <Route path="/home" element={<Home />} />
+
+          {/* Protected */}
+          <Route element={<PrivateRoute isLoggedIn={isLoggedIn} />}>
+            <Route path="/appliances" element={<ApplianceListing />} />
+            <Route path="/clothing" element={<ClothingListing />} />
+            <Route path="/food" element={<FoodListing />} />
+            <Route path="/donation-tracker" element={<DonationLanding />} />
+          </Route>
         </Route>
       </Routes>
     </Router>

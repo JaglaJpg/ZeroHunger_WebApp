@@ -35,8 +35,8 @@ public class DonationController {
 	
 	@GetMapping("/bankOptions")
 	public ResponseEntity<?> fetchBankOptions() {
-	    //Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal(); //fetch userID from security filter
-		long userId = 1111;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 	    try {
 	        List<BankOptionsDTO> options = donationService.fetchBanks(userId);//gathers 10 closest foodbanks to the user
 	        return ResponseEntity.ok(options);
@@ -47,8 +47,8 @@ public class DonationController {
 	
 	@GetMapping("/fetchDonations")
 	public ResponseEntity<?> fetchUserDonations() {
-	    // For testing — replace with real userId if needed
-	    long userId = 1111;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 
 	    try {
 	        return ResponseEntity.ok(donationService.fetchDonations(userId)); //returns ongoing donations linked to the user

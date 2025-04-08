@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,8 +43,8 @@ public class AppliancesDonationController {
 	@GetMapping("/listings")
 	public ResponseEntity<?> getAllDonations() {
 		try {
-			//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	        long userId = 1111;
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 	        Users user = userService.fetchUser(userId);
 			List<AppliancesDonation> donations = applianceDonationService.getAllAvailableDonations();
 			
@@ -64,8 +65,8 @@ public class AppliancesDonationController {
 	@RequestPart ("applianceData") @Valid AppliancesDonationRequest donationRequest, 
 	@RequestPart(value="image", required = false) MultipartFile image) {
 		try {
-			//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1212;
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 			
 			AppliancesDonation donation = applianceDonationService.createDonation(donationRequest, image, userId);
 			return ResponseEntity.ok(donation);
@@ -80,8 +81,8 @@ public class AppliancesDonationController {
 	@GetMapping("/my-donations")
 	public ResponseEntity<?> getUserDonations() {
 		try {
-			//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1212;
+			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 			
 			List<AppliancesDonation> donations = applianceDonationService.getUserDonations(userId);
 			return ResponseEntity.ok(donations);
@@ -92,8 +93,8 @@ public class AppliancesDonationController {
 
 	@PostMapping("/claim/{donationId}")
 	public ResponseEntity<?> claimDonation(@PathVariable Long donationId) {
-		//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        long userId = 1111;
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 		
 		boolean success = applianceDonationService.claimDonation(donationId);
 		if (success) {

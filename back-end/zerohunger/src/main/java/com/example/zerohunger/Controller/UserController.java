@@ -46,8 +46,8 @@ public class UserController {
     
     @GetMapping("/stats")
     public ResponseEntity<?> getUserStats(){
-    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	long userId = 1111;
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
     	
         UserStatsDTO stats = statsService.getUserStats(userId);
         
@@ -56,8 +56,8 @@ public class UserController {
     
     @GetMapping("/monthly")
     public ResponseEntity<?> getMonthlyStats(){
-    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	long userId = 1111;
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
     	
     	List<MonthlyFoodStatsDTO> stats = foodService.getMonthlyStats(userId);
     	
@@ -66,8 +66,8 @@ public class UserController {
     
     @GetMapping("/weekly")
     public ResponseEntity<?> getWeeklyStats(){
-    	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	long userId = 1111;
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
     	
     	List<WeeklyFoodStatsDTO> stats = foodService.getWeeklyStats(userId);
     	
@@ -76,7 +76,8 @@ public class UserController {
     
     @PostMapping("/addFood")
     public ResponseEntity<?> addFood(@RequestBody FoodItems foodItem) {
-        long userID = 1111; // ✅ Temporary User ID for testing
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userID = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
         
         FoodItems savedItem =foodService.AddFood(foodItem, userID);
 
@@ -85,7 +86,8 @@ public class UserController {
     
     @GetMapping("/getFood")
     public ResponseEntity<?> getFood() {
-    	long userID = 1111;
+    	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userID = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 
         return ResponseEntity.ok(foodService.getUserFood(userID));
     }

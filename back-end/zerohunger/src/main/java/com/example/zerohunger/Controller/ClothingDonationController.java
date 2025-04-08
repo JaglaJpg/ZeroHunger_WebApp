@@ -41,8 +41,8 @@ public class ClothingDonationController {
             @RequestPart(value = "image", required = false) MultipartFile image) {
 
         try {
-            //Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1212;
+        	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
         	
             ClothingDonation donation = clothingDonationService.createDonation(donationRequest, image, userId);
             return ResponseEntity.ok(donation);
@@ -56,8 +56,8 @@ public class ClothingDonationController {
     @GetMapping("/listings")
     public ResponseEntity<?> getAllAvailableClothing() {
         try {
-        	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1212;
+        	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
             Users user = userService.fetchUser(userId);
             List<ClothingDonation> donations = clothingDonationService.getAllAvailableDonations();
 
@@ -77,8 +77,8 @@ public class ClothingDonationController {
     @PutMapping("/claim/{id}")
     public ResponseEntity<?> claimClothing(@PathVariable Long id) {
         try {
-        	//Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            long userId = 1212;
+        	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
             ClothingDonation donation = clothingDonationService.fetchClothing(id);
             clothingDonationService.claimClothingItem(id);
             listingManager.extractListingInfo(donation, userId);
@@ -95,7 +95,8 @@ public class ClothingDonationController {
     @GetMapping("/my-donations")
     public ResponseEntity<?> getUserClothingDonations() {
         try {
-            Long userId = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
             return ResponseEntity.ok(clothingDonationService.getUserDonations(userId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Could not fetch user donations: " + e.getMessage());
