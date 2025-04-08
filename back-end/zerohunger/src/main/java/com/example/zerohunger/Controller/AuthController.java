@@ -3,6 +3,7 @@ package com.example.zerohunger.Controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,6 +80,13 @@ public class AuthController {
 	    response.addHeader("Set-Cookie", "refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
 
 	    return ResponseEntity.ok().build();
+	}
+	
+	@GetMapping("/validate")
+	public ResponseEntity<?> validateSession(){
+		System.out.println("hi");
+		return ResponseEntity.ok().build();
+		
 	}
 
 }

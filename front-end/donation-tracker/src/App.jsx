@@ -1,4 +1,4 @@
-import './App.css'
+import "./App.css";
 import React, { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -16,18 +16,26 @@ import ClothingListing from "./components/ClothingListing";
 import FoodListing from "./components/FoodListing";
 import DonationLanding from "./components/DonationLanding";
 import PrivateRoute from "./components/PrivateRoute";
-
+import DashboardPage from "./components/dashboardComponents/DashboardPage";
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null); // null = unknown
+  const [loading, setLoading] = useState(true);       // add loading state
 
   useEffect(() => {
-    const cookies = document.cookie.split(";").reduce((acc, cookie) => {
-      const [name, value] = cookie.trim().split("=");
-      acc[name] = value;
-      return acc;
-    }, {});
-    setIsLoggedIn(!!cookies.accessToken);
+    fetch("http://localhost:8080/auth/validate", {
+      method: "GET",
+      credentials: "include", // important for cookies
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Invalid session");
+        setIsLoggedIn(true);
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      })
+      .finally(() => setLoading(false));
   }, []);
+  
 
   const handleForbiddenRedirect = async () => {
     setIsLoggedIn(false);
@@ -38,17 +46,18 @@ const App = () => {
     if (event.reason?.status === 403) handleForbiddenRedirect();
   });
 
+  // 🧠 Hold off rendering until we know login state
+  if (loading) return <div>Loading...</div>;
+
   return (
     <Router>
       <Routes>
-        {/* 👇 Conditionally redirect / based on login */}
         <Route
           path="/"
           element={
             isLoggedIn ? <Navigate to="/home" replace /> : <Navigate to="/login" replace />
           }
         />
-
         <Route element={<Layout isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />}>
           {/* Public */}
           <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
@@ -61,11 +70,13 @@ const App = () => {
             <Route path="/clothing" element={<ClothingListing />} />
             <Route path="/food" element={<FoodListing />} />
             <Route path="/donation-tracker" element={<DonationLanding />} />
+            <Route path="/tracker" element={<DashboardPage />} />
           </Route>
         </Route>
       </Routes>
     </Router>
   );
 };
+
 
 export default App;
