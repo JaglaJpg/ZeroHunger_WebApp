@@ -14,6 +14,8 @@ import com.example.zerohunger.Repository.RefreshTokenRepo;
 import com.example.zerohunger.Repository.SessionRepo;
 import com.example.zerohunger.Utility.TokenUtil;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class SessionService {
 	private SessionRepo seshRepo;
@@ -59,6 +61,7 @@ public class SessionService {
 		
 	}
 	
+	@Transactional
 	public Boolean CleanUpSession(Long userID) {
 		refreshRepo.deleteByUserID_UserID(userID);
 		seshRepo.deleteByUserID_UserID(userID);

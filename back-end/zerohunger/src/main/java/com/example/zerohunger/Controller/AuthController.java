@@ -68,19 +68,17 @@ public class AuthController {
 	}
 	
 	@PostMapping("/logout")
-	public ResponseEntity<?> logOut(HttpServletResponse response){
-		String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		Long userId = Long.parseLong(principal);
+	public ResponseEntity<?> logOut(HttpServletResponse response) {
+		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 
-		//long userId = 1111;
-		 sessionService.CleanUpSession(userId);
-		 
-		 
-		 response.setHeader("Set-Cookie", "accessToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
-		 response.addHeader("Set-Cookie", "refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
 
-		 
-		 return ResponseEntity.ok(null);
-		 
+	    sessionService.CleanUpSession(userId);
+
+	    response.setHeader("Set-Cookie", "accessToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
+	    response.addHeader("Set-Cookie", "refreshToken=; HttpOnly; Path=/; Max-Age=0; SameSite=None; Secure");
+
+	    return ResponseEntity.ok().build();
 	}
+
 }

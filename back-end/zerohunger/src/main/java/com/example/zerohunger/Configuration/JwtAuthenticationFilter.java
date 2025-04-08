@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,9 +31,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        // ✅ Skip JWT filtering for public endpoints like /auth/*
         String path = request.getRequestURI();
-        return path.startsWith("/auth") || path.startsWith("/h2-console");
+        return path.equals("/auth/login") ||
+               path.equals("/auth/signup") ||
+               path.startsWith("/h2-console");
     }
 
     @Override
