@@ -77,7 +77,7 @@ const handleSubmit = async (e) => {
 const handleClaim = async (id) => {
     try {
         const res = await fetch(`http://localhost:8080/appliances/claim/${id}`, {
-            method: "POST",
+            method: "PUT",
             credentials: "include",
         });
         if (!res.ok) throw new Error("Claim failed");

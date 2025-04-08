@@ -56,8 +56,10 @@ public class FoodListingService {
     	return listing;
     }
     
-    public List<FoodListings> getAllListings() {
-        return foodRepo.findAll();
+    public List<FoodListings> getAllListings(Long userID) {
+    	List<FoodListings> list =  foodRepo.findAll();
+    	list.removeIf(donation -> donation.getUser().getUserID().equals(userID));
+        return list;
     }
 
     // ✅ Claim a food item

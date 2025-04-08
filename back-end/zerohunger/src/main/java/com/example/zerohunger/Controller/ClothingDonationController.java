@@ -59,7 +59,7 @@ public class ClothingDonationController {
         	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
             Users user = userService.fetchUser(userId);
-            List<ClothingDonation> donations = clothingDonationService.getAllAvailableDonations();
+            List<ClothingDonation> donations = clothingDonationService.getAllAvailableDonations(userId);
 
             for (ClothingDonation donation : donations) {
                 FoodBank bank = donation.getFoodBank();

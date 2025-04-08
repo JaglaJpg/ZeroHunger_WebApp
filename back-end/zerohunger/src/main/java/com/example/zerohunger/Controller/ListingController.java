@@ -65,7 +65,7 @@ public class ListingController {
     	Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
     	Users user = userService.fetchUser(userId);
-    	List<FoodListings> listings = foodService.getAllListings();
+    	List<FoodListings> listings = foodService.getAllListings(userId);
     	
     	for(FoodListings x : listings) {
     		FoodBank foodBank = x.getFoodBank();

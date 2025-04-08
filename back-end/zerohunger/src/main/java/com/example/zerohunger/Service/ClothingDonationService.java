@@ -70,8 +70,10 @@ public class ClothingDonationService {
         return clothingRepository.save(donation);
     }
 
-    public List<ClothingDonation> getAllAvailableDonations() {
-        return clothingRepository.findByIsAvailableTrue();
+    public List<ClothingDonation> getAllAvailableDonations(Long userID) {
+    	List <ClothingDonation> list = clothingRepository.findByIsAvailableTrue();
+    	list.removeIf(donation -> donation.getDonor().getUserID().equals(userID));
+    	return list;
     }
 
     public List<ClothingDonation> getUserDonations(Long userID) {

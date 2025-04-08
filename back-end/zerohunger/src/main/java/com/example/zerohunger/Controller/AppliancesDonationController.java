@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -46,7 +47,7 @@ public class AppliancesDonationController {
 			Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());
 	        Users user = userService.fetchUser(userId);
-			List<AppliancesDonation> donations = applianceDonationService.getAllAvailableDonations();
+			List<AppliancesDonation> donations = applianceDonationService.getAllAvailableDonations(userId);
 			
 			for(AppliancesDonation x: donations) {
 				FoodBank bank = x.getFoodBank();
@@ -91,7 +92,7 @@ public class AppliancesDonationController {
 		}
 	}
 
-	@PostMapping("/claim/{donationId}")
+	@PutMapping("/claim/{donationId}")
 	public ResponseEntity<?> claimDonation(@PathVariable Long donationId) {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		Long userId = principal instanceof Long ? (Long) principal : Long.parseLong(principal.toString());

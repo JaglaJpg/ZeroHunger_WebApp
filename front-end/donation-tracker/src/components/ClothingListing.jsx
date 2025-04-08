@@ -77,7 +77,7 @@ const ClothingListing = () => {
   const handleClaim = async (id) => {
     try {
       const res = await fetch(`http://localhost:8080/cloth/claim/${id}`, {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
       });
       if (!res.ok) throw new Error("Claim failed");

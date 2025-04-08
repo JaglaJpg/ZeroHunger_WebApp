@@ -69,8 +69,11 @@ public class ApplianceDonationService {
         return applianceRepository.save(donation);
     }
 
-    public List<AppliancesDonation> getAllAvailableDonations() {
-        return applianceRepository.findByIsAvailableTrue();
+    public List<AppliancesDonation> getAllAvailableDonations(Long userID) {
+    	List<AppliancesDonation> list = applianceRepository.findByIsAvailableTrue();
+    	list.removeIf(donation -> donation.getDonor().getUserID().equals(userID));
+    	
+        return list;
     }
 
     public List<AppliancesDonation> getUserDonations(Long userID) {
