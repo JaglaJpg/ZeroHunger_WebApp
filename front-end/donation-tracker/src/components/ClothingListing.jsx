@@ -77,7 +77,7 @@ const ClothingListing = () => {
   const handleClaim = async (id) => {
     try {
       const res = await fetch(`http://localhost:8080/cloth/claim/${id}`, {
-        method: "PUT",
+        method: "POST",
         credentials: "include",
       });
       if (!res.ok) throw new Error("Claim failed");
@@ -95,7 +95,7 @@ const ClothingListing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] p-6 font-[Poppins]">
-      <header className="bg-white border-b-2 border-black mb-6 p-4 flex justify-between items-center">
+      {/* <header className="bg-white border-b-2 border-black mb-6 p-4 flex justify-between items-center">
         <div className="flex items-center gap-4 text-xl font-bold text-black">
           <img src="planet-earth.png" alt="Logo" className="w-10" />
           ZERO HUNGER
@@ -106,12 +106,15 @@ const ClothingListing = () => {
           <a href="#" className="hover:text-[#cd5757]">About</a>
           <a href="#" className="hover:text-[#cd5757]">Vision</a>
         </nav>
-      </header>
+      </header> */}
 
       <main className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl text-black font-bold">Available Cloth Donations</h1>
-          <button onClick={() => setShowForm(true)} className="bg-black text-white px-4 py-2 rounded shadow font-semibold hover:bg-gray-800">Donate Clothes</button>
+          <button
+  onClick={() => setShowForm(true)}
+  className="border border-black text-white px-4 py-2 rounded shadow font-semibold hover:bg-black hover:text-white transition duration-300"
+  style={{ border: '1px solid black !important', color: 'black !important' }}>Donate Clothes</button>
         </div>
 
         {showForm && (
@@ -167,9 +170,9 @@ const ClothingListing = () => {
                   </>
                 )}
                 <button
-                  onClick={() => handleClaim(donation.id)}
-                  className="mt-3 w-full py-2 bg-[#cd5757] text-white rounded hover:bg-[#b84b4b]"
-                >
+                onClick={() => handleClaim(donation.id)}
+                className="mt-3 w-full border border-black py-2 rounded shadow font-semibold hover:bg-black hover:text-white transition duration-300"
+                style={{ border: '1px solid black !important', color: 'black !important' }}>
                   Claim This Donation
                 </button>
               </div>

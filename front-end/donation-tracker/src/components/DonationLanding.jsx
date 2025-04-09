@@ -75,7 +75,7 @@ function DonationLanding() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Community Sharing Platform</h1>
+        <h1>Donation Tracker</h1>
       </header>
 
       <main>
