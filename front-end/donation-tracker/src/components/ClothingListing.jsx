@@ -23,7 +23,7 @@ const ClothingListing = () => {
       .then((res) => res.json())
       .then((data) => setClothes(data))
       .catch((err) => console.error("Fetch clothes error:", err));
-  
+
     fetch("http://localhost:8080/donations/bankOptions", {
       credentials: "include",
     })
@@ -34,18 +34,18 @@ const ClothingListing = () => {
       })
       .catch((err) => console.error("Bank fetch error:", err));
   }, []);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const clothData = { ...form, foodBankID: selectedBank };
-  
+
     const payload = new FormData();
     payload.append(
       "clothData",
       new Blob([JSON.stringify(clothData)], { type: "application/json" })
     );
     if (form.image) payload.append("image", form.image);
-  
+
     try {
       const res = await fetch("http://localhost:8080/cloth/donate", {
         method: "POST",
@@ -73,11 +73,11 @@ const ClothingListing = () => {
       alert("Could not submit clothing donation.");
     }
   };
-  
+
   const handleClaim = async (id) => {
     try {
       const res = await fetch(`http://localhost:8080/cloth/claim/${id}`, {
-        method: "POST",
+        method: "PUT",
         credentials: "include",
       });
       if (!res.ok) throw new Error("Claim failed");
@@ -91,7 +91,7 @@ const ClothingListing = () => {
       alert("Failed to claim this item.");
     }
   };
-  
+
 
   return (
     <div className="min-h-screen bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] p-6 font-[Poppins]">
@@ -112,9 +112,9 @@ const ClothingListing = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl text-black font-bold">Available Cloth Donations</h1>
           <button
-  onClick={() => setShowForm(true)}
-  className="border border-black text-white px-4 py-2 rounded shadow font-semibold hover:bg-black hover:text-white transition duration-300"
-  style={{ border: '1px solid black !important', color: 'black !important' }}>Donate Clothes</button>
+            onClick={() => setShowForm(true)}
+            className="border border-black text-white px-4 py-2 rounded shadow font-semibold hover:bg-black hover:text-white transition duration-300"
+            style={{ border: '1px solid black !important', color: 'black !important' }}>Donate Clothes</button>
         </div>
 
         {showForm && (
@@ -158,28 +158,30 @@ const ClothingListing = () => {
                 <p className="text-sm text-gray-800"><strong>Category:</strong> {donation.category}</p>
                 {donation.foodBank && (
                   <>
-                    <p
-                      className="text-sm text-blue-600 underline cursor-help"
-                      title={donation.foodBank.address}
-                    >
+                    <p className="text-sm text-blue-600 underline cursor-help" title={donation.foodBank.address}>
                       {donation.foodBank.name.length > 30
                         ? donation.foodBank.name.slice(0, 30) + "..."
                         : donation.foodBank.name}
                     </p>
-                    <p className="text-sm text-gray-700"><strong>Distance:</strong> {Math.round(donation.foodBank.distance)} km</p>
+                    <p className="text-sm text-gray-700">
+                      <strong>Distance:</strong> {Math.round(donation.foodBank.distance)} km
+                    </p>
                   </>
                 )}
-                <button
-                onClick={() => handleClaim(donation.id)}
-                className="mt-3 w-full border border-black py-2 rounded shadow font-semibold hover:bg-black hover:text-white transition duration-300"
-                style={{ border: '1px solid black !important', color: 'black !important' }}>
-                  Claim This Donation
-                </button>
+                {!donation.belongs && (
+                  <button
+                    onClick={() => handleClaim(donation.id)}
+                    className="mt-3 w-full border border-black py-2 rounded shadow font-semibold text-white transition duration-300 hover:bg-black"
+                  >
+                    Claim This Donation
+                  </button>
+                )}
               </div>
             </div>
           )) : (
             <p className="col-span-full text-black text-xl text-center">No clothing donations available at the moment.</p>
           )}
+
         </div>
       </main>
     </div>

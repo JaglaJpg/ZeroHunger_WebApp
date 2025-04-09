@@ -1,6 +1,7 @@
 package com.example.zerohunger.Service;
 
 import com.example.zerohunger.DTO.ClothingDonationRequest;
+import com.example.zerohunger.Entity.AppliancesDonation;
 import com.example.zerohunger.Entity.ClothingDonation;
 import com.example.zerohunger.Entity.FoodBank;
 import com.example.zerohunger.Entity.Users;
@@ -72,7 +73,9 @@ public class ClothingDonationService {
 
     public List<ClothingDonation> getAllAvailableDonations(Long userID) {
     	List <ClothingDonation> list = clothingRepository.findByIsAvailableTrue();
-    	list.removeIf(donation -> donation.getDonor().getUserID().equals(userID));
+    	for (ClothingDonation x : list) {
+    		x.setBelongs(userID == x.getDonor().getUserID()? true:false);
+    	}
     	return list;
     }
 

@@ -45,6 +45,11 @@ public class ClothingDonation {
 
     private boolean isAvailable = true;
 
+    @Transient
+    private Boolean belongsToUser;
+    
+    public void setBelongs(Boolean x) {this.belongsToUser = x;}
+    public Boolean getBelongs() {return this.belongsToUser;}
 
     // Getters and Setters
 

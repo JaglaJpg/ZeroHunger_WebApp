@@ -71,7 +71,9 @@ public class ApplianceDonationService {
 
     public List<AppliancesDonation> getAllAvailableDonations(Long userID) {
     	List<AppliancesDonation> list = applianceRepository.findByIsAvailableTrue();
-    	list.removeIf(donation -> donation.getDonor().getUserID().equals(userID));
+    	for (AppliancesDonation x : list) {
+    		x.setBelongs(userID == x.getDonor().getUserID()? true:false);
+    	}
     	
         return list;
     }

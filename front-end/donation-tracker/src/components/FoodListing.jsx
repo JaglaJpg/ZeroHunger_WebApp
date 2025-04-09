@@ -11,7 +11,9 @@ const FoodListing = () => {
   const [selectedBankInfo, setSelectedBankInfo] = useState(null);
 
   const fetchListings = () => {
-    fetch("http://localhost:8080/listings", { credentials: "include" })
+    fetch("http://localhost:8080/listings", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setFoodItems(data))
       .catch((error) => console.error("Error fetching food items:", error));
@@ -24,10 +26,17 @@ const FoodListing = () => {
       .then((res) => res.json())
       .then((data) => {
         setBankOptions(data);
-        if (data.length > 0) setSelectedBank(data[0].bankID);
+        if (data.length > 0) {
+          setSelectedBank(data[0].bankID);
+        }
       })
       .catch((error) => console.error("Error fetching bank options:", error));
   };
+
+  useEffect(() => {
+    fetchListings();
+    fetchBankOptions();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,12 +51,13 @@ const FoodListing = () => {
       const response = await fetch("http://localhost:8080/listings/AddFood", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newFoodItem),
         credentials: "include",
+        body: JSON.stringify(newFoodItem),
       });
 
       if (!response.ok) throw new Error("Failed to add food");
       alert("Food added successfully!");
+
       setFoodName("");
       setExpirationDate("");
       setFoodTypes([]);
@@ -61,13 +71,10 @@ const FoodListing = () => {
 
   const handleClaim = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:8080/listings/claim/${id}`,
-        {
-          method: "PUT",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(`http://localhost:8080/listings/claim/${id}`, {
+        method: "PUT",
+        credentials: "include",
+      });
 
       if (!response.ok) throw new Error("Failed to claim food");
       alert("Food claimed!");
@@ -83,21 +90,14 @@ const FoodListing = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] text-gray-900 flex flex-col items-center p-6 font-[Poppins]">
-      <h1 className="text-5xl font-bold text-center mb-8 text-white">
-         Food Listings
-      </h1>
+      <h1 className="text-5xl font-bold text-center mb-8 text-white">Food Listings</h1>
 
-      {/* Form Section */}
       {showForm && (
         <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg mx-auto mb-10 transition-transform transform hover:scale-105 hover:shadow-xl">
-          <h2 className="text-3xl font-bold mb-5 text-[#cd5757]">
-             Add Food Item
-          </h2>
+          <h2 className="text-3xl font-bold mb-5 text-[#cd5757]">Add Food Item</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block font-semibold mb-1 text-[#cd5757]">
-                Food Name:
-              </label>
+              <label className="block font-semibold mb-1 text-[#cd5757]">Food Name:</label>
               <input
                 type="text"
                 value={foodName}
@@ -106,10 +106,9 @@ const FoodListing = () => {
                 required
               />
             </div>
+
             <div>
-              <label className="block font-semibold mb-1 text-[#cd5757]">
-                Expiration Date:
-              </label>
+              <label className="block font-semibold mb-1 text-[#cd5757]">Expiration Date:</label>
               <input
                 type="date"
                 value={expirationDate}
@@ -118,17 +117,14 @@ const FoodListing = () => {
                 required
               />
             </div>
+
             <div>
-              <label className="block font-semibold mb-1 text-[#cd5757]">
-                Food Type:
-              </label>
+              <label className="block font-semibold mb-1 text-[#cd5757]">Food Type:</label>
               <select
                 multiple
                 value={foodTypes}
                 onChange={(e) =>
-                  setFoodTypes(
-                    [...e.target.selectedOptions].map((o) => o.value)
-                  )
+                  setFoodTypes([...e.target.selectedOptions].map((o) => o.value))
                 }
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#cd5757]"
               >
@@ -139,10 +135,9 @@ const FoodListing = () => {
                 <option value="EGG_FREE">Egg Free</option>
               </select>
             </div>
+
             <div>
-              <label className="block font-semibold mb-1 text-[#cd5757]">
-                Pickup Location:
-              </label>
+              <label className="block font-semibold mb-1 text-[#cd5757]">Pickup Location:</label>
               <select
                 value={selectedBank}
                 onChange={(e) => setSelectedBank(e.target.value)}
@@ -151,14 +146,12 @@ const FoodListing = () => {
               >
                 {bankOptions.map((bank) => (
                   <option key={bank.bankID} value={bank.bankID}>
-                    {bank.name.length > 30
-                      ? `${bank.name.slice(0, 30)}...`
-                      : bank.name}{" "}
-                    ({Math.round(bank.distance)} km)
+                    {bank.name.length > 30 ? `${bank.name.slice(0, 30)}...` : bank.name} ({Math.round(bank.distance)} km)
                   </option>
                 ))}
               </select>
             </div>
+
             <button
               type="submit"
               className="w-full bg-[#cd5757] text-white py-3 rounded-md font-semibold hover:bg-[#b84b4b] transition"
@@ -178,17 +171,11 @@ const FoodListing = () => {
         </button>
       )}
 
-      {/* Food Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
         {foodItems.length > 0 ? (
           foodItems.map((food) => (
-            <div
-              key={food.id}
-              className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition"
-            >
-              <h3 className="text-xl font-bold text-[#cd5757] mb-2">
-                {food.foodName}
-              </h3>
+            <div key={food.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+              <h3 className="text-xl font-bold text-[#cd5757] mb-2">{food.foodName}</h3>
               <p className="text-sm text-gray-700 mb-1">
                 <strong>Expiration:</strong> {food.expirationDate}
               </p>
@@ -198,6 +185,7 @@ const FoodListing = () => {
                   ? food.foodTypes.join(", ")
                   : "None"}
               </p>
+
               {food.foodBank && (
                 <>
                   <p className="text-sm text-blue-700 mb-1">
@@ -211,22 +199,24 @@ const FoodListing = () => {
                     </span>
                   </p>
                   <p className="text-sm text-gray-600 mb-3">
-                    <strong>Distance:</strong>{" "}
-                    {Math.round(food.foodBank.distance)} km
+                    <strong>Distance:</strong> {Math.round(food.foodBank.distance)} km
                   </p>
                 </>
               )}
-              <button
-                onClick={() => handleClaim(food.id)}
-                disabled={food.claimed}
-                className={`w-full mt-3 py-2 rounded-md font-semibold transition ${
-                  food.claimed
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-[#cd5757] hover:bg-[#b84b4b] text-white"
-                }`}
-              >
-                {food.claimed ? "Claimed" : "Claim Donation"}
-              </button>
+
+              {!food.belongs && (
+                <button
+                  onClick={() => handleClaim(food.id)}
+                  disabled={food.claimed}
+                  className={`w-full mt-3 py-2 rounded-md font-semibold transition ${food.claimed
+                      ? "bg-gray-400 cursor-not-allowed text-white"
+                      : "bg-[#cd5757] hover:bg-[#b84b4b] text-white"
+                    }`}
+                >
+                  {food.claimed ? "Claimed" : "Claim Donation"}
+                </button>
+
+              )}
             </div>
           ))
         ) : (
@@ -234,7 +224,6 @@ const FoodListing = () => {
         )}
       </div>
 
-      {/* Bank Info Modal */}
       {selectedBankInfo && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full relative">
@@ -249,8 +238,7 @@ const FoodListing = () => {
               <strong>Address:</strong> {selectedBankInfo.address}
             </p>
             <p>
-              <strong>Distance:</strong> {Math.round(selectedBankInfo.distance)}{" "}
-              km
+              <strong>Distance:</strong> {Math.round(selectedBankInfo.distance)} km
             </p>
           </div>
         </div>

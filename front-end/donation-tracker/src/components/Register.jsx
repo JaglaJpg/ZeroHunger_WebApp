@@ -75,6 +75,16 @@ const Register = () => {
     }
   };
 
+  const fields = [
+    { label: "First Name", name: "firstName", type: "text" },
+    { label: "Last Name", name: "lastName", type: "text" },
+    { label: "Date of Birth", name: "dob", type: "date" },
+    { label: "Email", name: "email", type: "email" },
+    { label: "Password", name: "password", type: "password" },
+    { label: "Confirm Password", name: "confirmPassword", type: "password" },
+    { label: "Address", name: "address", type: "text" },
+  ];
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-t from-[#cd5757] to-[#dfb7c3] flex items-center justify-center px-4">
       <div className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-10">
@@ -83,15 +93,7 @@ const Register = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            { label: "First Name", name: "firstName", type: "text" },
-            { label: "Last Name", name: "lastName", type: "text" },
-            { label: "Date of Birth", name: "dob", type: "date", extraClass: "text-gray-500" },
-            { label: "Email", name: "email", type: "email" },
-            { label: "Password", name: "password", type: "password" },
-            { label: "Confirm Password", name: "confirmPassword", type: "password" },
-            { label: "Address", name: "address", type: "text" },
-          ].map((input) => (
+          {fields.map((input) => (
             <div key={input.name}>
               <label
                 htmlFor={input.name}
@@ -106,8 +108,7 @@ const Register = () => {
                 required
                 value={form[input.name]}
                 onChange={handleChange}
-                className={`w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#cd5757] ${input.extraClass || ""}`}
-                style={input.type === "date" ? { colorScheme: "light" } : {}}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#cd5757] text-gray-900 placeholder-gray-400"
               />
             </div>
           ))}

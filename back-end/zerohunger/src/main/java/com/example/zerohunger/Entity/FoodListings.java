@@ -31,6 +31,12 @@ public class FoodListings {
     @ManyToOne
     @JoinColumn(name = "foodBankID")
     private FoodBank foodBank;
+    
+    @Transient
+    private Boolean belongsToUser;
+    
+    public void setBelongs(Boolean x) {this.belongsToUser = x;}
+    public Boolean getBelongs() {return this.belongsToUser;}
 
 
     // ✅ Default Constructor

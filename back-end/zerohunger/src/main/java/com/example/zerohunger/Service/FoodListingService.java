@@ -1,6 +1,7 @@
 package com.example.zerohunger.Service;
 
 import com.example.zerohunger.DTO.AddFoodRequest;
+import com.example.zerohunger.Entity.AppliancesDonation;
 import com.example.zerohunger.Entity.FoodBank;
 import com.example.zerohunger.Entity.FoodListings;
 import com.example.zerohunger.Entity.Users;
@@ -58,7 +59,9 @@ public class FoodListingService {
     
     public List<FoodListings> getAllListings(Long userID) {
     	List<FoodListings> list =  foodRepo.findAll();
-    	list.removeIf(donation -> donation.getUser().getUserID().equals(userID));
+    	for (FoodListings x : list) {
+    		x.setBelongs(userID == x.getUser().getUserID()? true:false);
+    	}
         return list;
     }
 
