@@ -1,8 +1,8 @@
-ZeroHunger WebApp
+**ZeroHunger WebApp**
 
 A full-stack web application designed to streamline food, appliance, and clothing donations through an anonymous, geolocation-based platform. Built using a React frontend and Spring Boot backend, ZeroHunger connects donors with nearby distribution centers such as food banks and soup kitchens, offering a clean and intuitive user experience.
 
-""Live Stack""
+**Live Stack**
 
 Frontend: React + Vite + Tailwind CSS
 
@@ -14,7 +14,7 @@ Security: JWT-based authentication
 
 Data Handling: REST APIs, JSON
 
-🔧 Setup Instructions
+**Setup Instructions**
 
 Backend
 
@@ -28,7 +28,7 @@ cd front-end/donation-tracker
 npm install
 npm run dev
 
-📦 Project Structure
+**Project Structure**
 
 zerohunger/
 ├── back-end/zerohunger          # Spring Boot Backend
@@ -41,37 +41,37 @@ zerohunger/
 │   └── package.json
 └── .gitignore
 
-🌟 Features
+**Features**
 
-🔐 Authentication
+**Authentication**
 
 JWT-based login and registration.
 
 Address geocoding stored on signup for distance-based logic.
 
-📍 Donation Listings
+**Donation Listings**
 
 Donors can post listings for food, clothing, and appliances.
 
 Listings are paired with the 10 nearest charities from the database based on the donor's location.
 
-🚚 Donation Tracker
+**Donation Tracker**
 
 Donors can update status (e.g. ready, in transit, delivered).
 
 Recipients can view status in real time.
 
-📊 Dashboard & Analytics
+**Dashboard & Analytics**
 
 View how much you've donated (quantity, type).
 
 Log personal food and track waste vs. saved items.
 
-📁 My Fridge
+**My Fridge**
 
 Feature for users to log their food manually to help build personalized waste statistics.
 
-🤖 Tech Details
+**Tech Details**
 
 Backend
 
@@ -93,7 +93,7 @@ fetch with credentials: include for session management.
 
 Charts rendered using recharts.
 
-📌 Contributions
+**Contributions**
 
 This project was built as part of a university group project. While collaboration was intended, I took ownership of the majority of the backend, including:
 
@@ -111,7 +111,7 @@ Frontend routing structure and some UI polishing
 
 I also handled much of the deployment-ready structuring and cleanups for group-wide integration.
 
-🔭 Future Improvements
+**Future Improvements**
 
 Allow users to change address after registration.
 
@@ -123,7 +123,7 @@ Improve responsive design and component polish.
 
 E2E testing suite and backend validation enhancements.
 
-🛠️ Tooling
+**Tooling**
 
 Version control via Git
 
@@ -131,7 +131,7 @@ Deployed with GitHub Pages (frontend only preview, backend local/dev only)
 
 ESLint config is present but not actively used
 
-📁 .gitignore Excerpts
+**.gitignore Excerpts**
 
 # === React/Vite Frontend ===
 node_modules/
@@ -156,7 +156,7 @@ dist/
 .vscode/
 *.launch
 
-🧠 Author
+**Author**
 
 Wiktor Jagla
 GitHub Portfolio
