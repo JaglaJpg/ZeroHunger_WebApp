@@ -2,7 +2,7 @@ ZeroHunger WebApp
 
 A full-stack web application designed to streamline food, appliance, and clothing donations through an anonymous, geolocation-based platform. Built using a React frontend and Spring Boot backend, ZeroHunger connects donors with nearby distribution centers such as food banks and soup kitchens, offering a clean and intuitive user experience.
 
-🌐 Live Stack
+""Live Stack""
 
 Frontend: React + Vite + Tailwind CSS
 
